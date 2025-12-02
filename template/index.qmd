@@ -1,0 +1,13 @@
+---
+title: "Template"
+description: "Esta es la template con la que diseñar los simuladores."
+date: 2025-11-02
+categories: [""]
+image: template.png
+---
+
+::: {style="height: calc(80vh - 250px);"}
+<iframe src="https://virtualpatients.webs.upv.es/StatisticalSimulators/template/appsite" title="ANOVA Unifactorial App" style="position: absolute; top: 250; left: 0; width: 100%; height: 80%; border: 0;" loading="lazy">
+
+</iframe>
+:::

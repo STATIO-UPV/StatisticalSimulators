@@ -1,0 +1,35 @@
+{
+  "languages": ["en", "pl", "it"],
+  "translation": [
+      {
+        "en": "Hello Shiny!",
+        "pl": "Witaj Shiny!",
+        "it": "Ciao Shiny!"
+      },
+      {
+        "en": "Number of bins:",
+        "pl": "Liczba podziałek:",
+        "it": "Numero di intervalli"
+      },
+      {
+        "en": "This is description of the plot.",
+        "pl": "To jest opis obrazka.",
+        "it": "Questa è la descrizione della grafico."
+      },
+      {
+        "en": "Histogram of x",
+        "pl": "Histogram x",
+        "it": "Istogramma di x"
+      },
+      {
+        "en": "Frequency",
+        "pl": "Częstotliwość",
+        "it": "Frequenza"
+      },
+      {
+        "en": "Change language",
+        "pl": "Wybierz język",
+        "it": "Cambia lingua"
+      }
+    ]
+}
