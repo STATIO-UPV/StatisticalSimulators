@@ -280,23 +280,24 @@ ui <- fluidPage(
     actionButton("toggleSidebar", textOutput("button_parameters"))
   },
   
-  # PANEL LATERAL DE PARÁMETROS. Añadir tantos parámetros como se desee. 
+  # PANEL LATERAL DE PARÁMETROS.
   
-  div(id="sidebarWrapper", class= "opened",
+  div(id="sidebarWrapper",
       style="padding-top: 50px;",
       if(showparams) {
         div(
           
-          #Here you can add as many parameters, menus, slides and titles as you may need. 
           h4(textOutput("text_downmenu")), uiOutput("dropdown_ui"),
           
           # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
           # This is the way to link dropdown menus to parameters and other functions.
+          
           conditionalPanel( 
             condition = "input.server_id == 'opt1'", 
             uiOutput("slider1_ui"), 
             uiOutput("slider2_ui"), 
             uiOutput("slider3_ui")), 
+          
           conditionalPanel( 
             condition = "input.server_id == 'opt2'", 
             uiOutput("slider4_ui"), 
@@ -307,134 +308,86 @@ ui <- fluidPage(
   ),
   
   
-  ############ This section is for the main body of your app #######################
+  # -------------------- CONTENIDO PRINCIPAL -------------------------------
   
   div(id="contentWrapper", class = "shifted",
       
-      ############### This section is for the title and main explanation. #######################
+      # Título y explicación. No modificar aquí, solo en el diccionario. 
       
-      # Please, modify ONLY the title and main explanation. 
-      
-      div(
-        style="padding-top: 70px;", 
-        
-        # TITLE
-        
-        fluidRow(
-          column(
-            width = 12,
-            div(
-              style="text-align: center; margin: 0;",
-              h2(textOutput("title"), style="margin: 0 0 5px 0;")
+        div(style="padding-top:70px;",
+            h2(textOutput("title"), align="center"),
+            div(style="display:flex; justify-content:center;",
+                div(style="border:2px solid #4a90e2; border-radius:12px; padding:12px; 
+                         max-width:600px; background:white; text-align:center;",
+                    uiOutput("explanation")
+                )
             )
-          )
+        ),
+      
+      # --------------------- TABS DE LA APLICACIÓN ---------------------
+      
+      tabsetPanel(
+        tabPanel(textOutput("panel1_title"),
+                 htmlOutput("plot_title"),
+                 plotOutput("Plot_ID"),
+                 uiOutput("sampleStats"),
+                 htmlOutput("table_name"), verbatimTextOutput("aov"),
+                 htmlOutput("interpretation_text"), textOutput("conclusionText"),
+                 uiOutput("resultsMessage")
         ),
         
-        # Main explanation. 
-        
-        fluidRow(
-          div(
-            style="
-          display: flex;
-          justify-content: center;
-          width: 100%;
-          margin-top: 20px;       /* separación mínima */
-        ",
-            div(
-              style="
-            border: 2px solid #4a90e2;
-            border-radius: 12px;
-            padding: 10px 15px;
-            background-color: white;
-            box-shadow: 0px 2px 3px rgba(0,0,0,0.12);
-            max-width: 600px;
-            text-align: center;
-            margin-left: 15px;
-            margin-right: 15px;
-          ",
-              uiOutput("explanation")
-            )
-          )
-        )
+        tabPanel(textOutput("panel2_title")),
+        tabPanel(textOutput("panel3_title")),
+        tabPanel("Data", tableOutput("data"))
       ),
       
-      
-      ###################### This section is for all tabs. Add and modify as many tabs as needed. ######################
-      
-      div(style = "margin-top: 40px;",
-          tabsetPanel(
-            type = "tabs",
-            tabPanel(textOutput("panel1_title"),
-                     htmlOutput("plot_title"), 
-                     plotOutput("Plot_ID"),
-                     uiOutput("sampleStats"),
-                     htmlOutput("table_name"), verbatimTextOutput("aov"),
-                     htmlOutput("interpretation_text"), textOutput("conclusionText"), br(),
-                     uiOutput("resultsMessage")
-            ),
-            tabPanel(textOutput("panel2_title"), 
-                     
-            ),
-            tabPanel(textOutput("panel3_title"),
-                     
-            ),
-            tabPanel("Data", tableOutput("data"))
-          )
-      ), 
-      
-      div(
-        style="
-    width: 100%;
-    margin-top: 40px;
-    padding: 25px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;     /* Centrado horizontal */
-    justify-content: center; /* Centrado del contenido */
-    text-align: center;
-  ",
-        
-        div(
-          class = "logo-row",
-          style="display: flex; gap: 10px; justify-content: center;",
-          tags$img(src='DEIOAC.png', class = "logo-img"),
-          tags$img(src='UPV.png',    class = "logo-img")
-        ),
-        
-        div(
-          class = "text-box",
-          style="max-width: 600px; margin-top: 10px; text-align: center;",
+      div(style="margin-top:40px; text-align:center;",
+          tags$img(src='DEIOAC.png', height=80),
+          tags$img(src='UPV.png', height=80),
           htmlOutput("creditos")
-        )
       )
   )
 )
 
 
-# Define server logic for random distribution app ----
+############################ SERVER #######################################
 
 server <- function(input, output) {
   
-  # FIX BUG 2: Trigger resize event when toggling sidebar
+  # ---------------- Manejo del panel lateral. NO MODIFICAR. --------------------
   observeEvent(input$toggleSidebar, {
     shinyjs::toggleClass(id = "sidebarWrapper", class = "closed")
     shinyjs::toggleClass(id = "contentWrapper", class = "shifted")
-    
-    # Force a window resize trigger after the CSS transition (300ms) completes
-    # This ensures ggplot rescales correctly
     shinyjs::runjs("setTimeout(function() { $(window).trigger('resize'); }, 350);")
   })
   
+  # ---------------- IDIOMA -----------------
   language <- reactiveVal("ES") 
   observeEvent(input$lang_es, { language("ES") }) 
   observeEvent(input$lang_en, { language("EN") }) 
   observeEvent(input$lang_va, { language("VAL") })
+  
+  # ---------------------- TEXTOS TRADUCIBLES -------------------------
   
   output$title <- renderText({ tr("title", language()) })
   output$explanation <- renderUI({ HTML(tr("explanation", language())) })
   output$panel1_title <- renderText({ tr("panel1", language()) })
   output$panel2_title <- renderText({ tr("panel2", language()) })
   output$panel3_title <- renderText({ tr("panel3", language()) })
+  output$button_parameters <- renderText({tr("button_parameters", language())})
+  output$text_downmenu <- renderText({ tr("text_downmenu", language()) })
+  output$creditos <- renderUI({ HTML(tr("credits", language())) })
+  
+  # ---------------- PARÁMETROS DINÁMICOS ----------------
+  
+  output$dropdown_ui <- renderUI({ 
+    selectInput( "server_id", tr("dropdown_label", language()), 
+                 choices = setNames( 
+                   c("opt1", "opt2"), 
+                   c(tr("option1", language()), tr("option2", language())) ) ) }
+  )
+  
+  # Sliders generados dinámicamente
   
   output$plot_title <- renderUI({
     HTML(paste0("<h3 style='font-size:22px; font-weight:bold'>",
@@ -454,10 +407,10 @@ server <- function(input, output) {
                 "</h3>"))
   })
   
-  output$creditos <- renderUI({ HTML(tr("credits", language())) })
   
-  output$button_parameters <- renderText({tr("button_parameters", language())})
-  output$text_downmenu <- renderText({ tr("text_downmenu", language()) })
+  
+  
+  
   output$slider1_ui <- renderUI({
     sliderInput("sliderId", tr("slider1", language()), min = 1, max = 100, value = 30)
   })
@@ -478,12 +431,7 @@ server <- function(input, output) {
     sliderInput("sliderId6", tr("slider6", language()), min = 1, max = 70, value = 30)
   })
   
-  output$dropdown_ui <- renderUI({ 
-    selectInput( "server_id", tr("dropdown_label", language()), 
-                 choices = setNames( 
-                   c("opt1", "opt2"), 
-                   c(tr("option1", language()), tr("option2", language())) ) ) }
-  )
+  
   
   # Reactive expression to generate the requested distribution ----
   # This is called whenever the inputs change. The output functions
