@@ -1,7 +1,7 @@
 ######################### LIBRERÍAS (PUEDES AÑADIR, NO BORRAR) #########################
-# shiny      → Construcción de la interfaz y del servidor
-# shinyjs    → Permite usar JS para mostrar/ocultar paneles y dinamismo
-# tidyverse  → Para manipulación cómoda de datos
+# shiny       → Construcción de la interfaz y del servidor
+# shinyjs     → Permite usar JS para mostrar/ocultar paneles y dinamismo
+# tidyverse   → Para manipulación cómoda de datos
 # car/ agricolae → Tests estadísticos opcionales (ANOVA, etc.)
 
 library(shiny)
@@ -120,7 +120,7 @@ texts <- list(
   tabla= c(
     ES= "Tabla Ejemplo: Este es un ejemplo de tabla (para ANOVA)", 
     EN= "Example Table: This is a table example (for ANOVA)", 
-    VAL= "Taula Exemple: Esta és una taula d'exemple (per a *ANOVA)" 
+    VAL= "Taula Exemple: Esta és una taula d'exemple (per a ANOVA)" 
   ),
   
   interpretation= c(
@@ -162,7 +162,7 @@ tr <- function(id, lang) { texts[[id]][[lang]] }
 
 ui <- fluidPage(
   
-  useShinyjs(),
+  useShinyjs(), # Activa funciones JS. 
   
   absolutePanel(
     top = 10, right = 10, fixed = TRUE,
@@ -172,7 +172,7 @@ ui <- fluidPage(
   ),
   
   # --------------------------
-  # 1. CSS. This is for style the template, do not touch. 
+  # 1. CSS PARA LA ESTRUCTURA VISUAL DE LA TEMPLATE. NO TOCAR. 
   tags$head(
     tags$style(HTML("
         #sidebarWrapper {
@@ -410,11 +410,14 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
-  #Do not touch this. This is for opening and closing slider.
-  
+  # FIX BUG 2: Trigger resize event when toggling sidebar
   observeEvent(input$toggleSidebar, {
     shinyjs::toggleClass(id = "sidebarWrapper", class = "closed")
     shinyjs::toggleClass(id = "contentWrapper", class = "shifted")
+    
+    # Force a window resize trigger after the CSS transition (300ms) completes
+    # This ensures ggplot rescales correctly
+    shinyjs::runjs("setTimeout(function() { $(window).trigger('resize'); }, 350);")
   })
   
   language <- reactiveVal("ES") 
@@ -498,18 +501,20 @@ server <- function(input, output) {
     
     set.seed(123)
     
+    # FIX BUG 3: Changed groups from "a", "b", "c" to "A", "B", "C"
+    # so they match the summarization logic below (means$group == "A")
     example1 <- data.frame(
-      group = "a",
+      group = "A",
       value = rnorm(n, uA, sdA)
     )
     
     example2 <- data.frame(
-      group = "b",
+      group = "B",
       value = rnorm(n, uB, sdB)
     )
     
     example3 <- data.frame(
-      group = "c",
+      group = "C",
       value = rnorm(n, uC, sdC)
     )
     
@@ -610,8 +615,9 @@ server <- function(input, output) {
     conclusion()
   })
   
+  # FIX BUG 1: Used tr() for translation
   output$resultsMessage <- renderUI({
-    HTML("<h3 style='color: gray; text-align: center;'>ADD AS MANY RESULTS AS YOU WANT</h3>")
+    HTML(paste0("<h3 style='color: gray; text-align: center;'>", tr("resultsMessage", language()), "</h3>"))
   })
   
   output$data <- renderTable({
