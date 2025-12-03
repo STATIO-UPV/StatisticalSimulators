@@ -1,8 +1,4 @@
-######################### LIBRERÍAS (PUEDES AÑADIR, NO BORRAR) #########################
-# shiny      → Construcción de la interfaz y del servidor
-# shinyjs    → Permite usar JS para mostrar/ocultar paneles y dinamismo
-# tidyverse  → Para manipulación cómoda de datos
-# car/ agricolae → Tests estadísticos opcionales (ANOVA, etc.)
+################ LIBRARIES IMPORT. DO NOT TOUCH THIS. #####################
 
 library(shiny)
 library(shinyjs)
@@ -16,21 +12,15 @@ if (FALSE) {
 }
 
 
-############################ SISTEMA DE TEXTOS Y TRADUCCIÓN ############################
+###################### This is the body of the application ##############################
 
-# showparams controla si se muestra el panel lateral de parámetros
-showparams <- TRUE # Cambiarlo a FALSE si no se necesita barra de parámetros.
-
-
-# Lista de textos en cada idioma.
-# Cada entrada tiene ES / EN / VAL.
-# Añadir tantas traducciones al dict como sean necesarias. 
+showparams <- TRUE #change this to FALSE if no parameters are needed
 
 texts <- list( 
   title = c( 
-    ES = "Título de tu aplicación", 
-    EN = "Application Title", 
-    VAL = "Títol de la teua aplicació" ), 
+  ES = "Título de tu aplicación", 
+  EN = "Application Title", 
+  VAL = "Títol de la teua aplicació" ), 
   explanation = c( 
     ES = "Breve explicación de la aplicación.", 
     EN = "Short explanation of the application.", 
@@ -145,32 +135,26 @@ texts <- list(
       EN = "ADD ANY RESULTS YOU WANT", 
       VAL = "AFIG ELS RESULTATS QUE VULGUES" ), 
   credits= c( 
-    ES= "STATIO es un Proyecto de Innovación y Mejora Educativa (PIME/25-26/562) 
-    desarrollado por el DEIOAC-UPV.", 
-    EN= "STATIO is an Educational Innovation and Improvement Project (PIME/25-26/562) 
-    developed by the DEIOAC-UPV.", 
-    VAL= "STATIO és un Projecte d'Innovació i Millora Educativa (*PIME/25-26/562) 
-    desenrotllat pel *DEIOAC-UPV" )
-)
+    ES= "Aplicación realizada para el proyecto docente de Javier Marín Morales. 
+    Concurso a PPL C03/24, código de la plaza 7266.", 
+    EN= "Application developed for Javier Marín Morales' teaching project. 
+    PPL C03/24 competition, position code 7266. ENG", 
+    VAL= "Aplicació realitzada per al projecte docent de Javier Marín Morales. 
+    Concurs a *PPL C03/24, codi de la plaça 7266." )
+  )
 
-
-# Función de traducción: dado el ID y el idioma, devuelve el texto correcto
-
-tr <- function(id, lang) { texts[[id]][[lang]] }
-
-##################### USER INTERFACE ######################################
-
+  tr <- function(id, lang) { texts[[id]][[lang]] }
 ui <- fluidPage(
   
   useShinyjs(),
   
   absolutePanel(
-    top = 10, right = 10, fixed = TRUE,
-    actionButton("lang_es", "ES"),
-    actionButton("lang_en", "EN"),
-    actionButton("lang_va", "VAL")
-  ),
-  
+  top = 10, right = 10, fixed = TRUE,
+  actionButton("lang_es", "ES"),
+  actionButton("lang_en", "EN"),
+  actionButton("lang_va", "VAL")
+),
+
   # --------------------------
   # 1. CSS. This is for style the template, do not touch. 
   tags$head(
@@ -209,10 +193,10 @@ ui <- fluidPage(
           left: 10px;
           z-index: 3000; /* siempre por encima */
               }"
-    )
-    )
+          )
+      )
   ),
-  
+
   tags$style(HTML("
   
     /* Fila de logos */
@@ -269,74 +253,74 @@ ui <- fluidPage(
     }
   "))
   ),
-  
-  
-  # Button that show parameters section. 
-  
-  if(showparams) {
-    actionButton("toggleSidebar", textOutput("button_parameters"))
-  },
-  
-  div(id="sidebarWrapper", class= "closed",
-      style="padding-top: 50px;",
-      if(showparams) {
-        div(
-          
-          #Here you can add as many parameters, menus, slides and titles as you may need. 
-          h4(textOutput("text_downmenu")), uiOutput("dropdown_ui"),
-          
-          # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
-          # This is the way to link dropdown menus to parameters and other functions.
-          conditionalPanel( 
-            condition = "input.server_id == 'opt1'", 
-            uiOutput("slider1_ui"), 
-            uiOutput("slider2_ui"), 
-            uiOutput("slider3_ui")), 
-          conditionalPanel( 
-            condition = "input.server_id == 'opt2'", 
-            uiOutput("slider4_ui"), 
-            uiOutput("slider5_ui"), 
-            uiOutput("slider6_ui") )
-        )
-      }
-  ),
-  
-  
-  ############ This section is for the main body of your app #######################
-  
-  div(id="contentWrapper",
+
       
-      ############### This section is for the title and main explanation. #######################
-      
-      # Please, modify ONLY the title and main explanation. 
-      
+# Button that show parameters section. 
+
+if(showparams) {
+  actionButton("toggleSidebar", textOutput("button_parameters"))
+},
+
+div(id="sidebarWrapper", class= "closed",
+    style="padding-top: 50px;",
+    if(showparams) {
       div(
-        style="padding-top: 70px;", 
         
-        # TITLE
+        #Here you can add as many parameters, menus, slides and titles as you may need. 
+        h4(textOutput("text_downmenu")), uiOutput("dropdown_ui"),
         
-        fluidRow(
-          column(
-            width = 12,
-            div(
-              style="text-align: center; margin: 0;",
-              h2(textOutput("title"), style="margin: 0 0 5px 0;")
-            )
-          )
-        ),
-        
-        # Main explanation. 
-        
-        fluidRow(
+        # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
+        # This is the way to link dropdown menus to parameters and other functions.
+        conditionalPanel( 
+          condition = "input.server_id == 'opt1'", 
+          uiOutput("slider1_ui"), 
+          uiOutput("slider2_ui"), 
+          uiOutput("slider3_ui")), 
+        conditionalPanel( 
+          condition = "input.server_id == 'opt2'", 
+          uiOutput("slider4_ui"), 
+          uiOutput("slider5_ui"), 
+          uiOutput("slider6_ui") )
+      )
+    }
+),
+
+  
+############ This section is for the main body of your app #######################
+
+div(id="contentWrapper",
+    
+   ############### This section is for the title and main explanation. #######################
+   
+   # Please, modify ONLY the title and main explanation. 
+    
+    div(
+      style="padding-top: 70px;", 
+      
+      # TITLE
+      
+      fluidRow(
+        column(
+          width = 12,
           div(
-            style="
+            style="text-align: center; margin: 0;",
+            h2(textOutput("title"), style="margin: 0 0 5px 0;")
+          )
+        )
+      ),
+      
+      # Main explanation. 
+      
+      fluidRow(
+        div(
+          style="
           display: flex;
           justify-content: center;
           width: 100%;
           margin-top: 20px;       /* separación mínima */
         ",
-            div(
-              style="
+          div(
+            style="
             border: 2px solid #4a90e2;
             border-radius: 12px;
             padding: 10px 15px;
@@ -347,38 +331,38 @@ ui <- fluidPage(
             margin-left: 15px;
             margin-right: 15px;
           ",
-              uiOutput("explanation")
-            )
+            uiOutput("explanation")
           )
         )
-      ),
-      
-      
-      ###################### This section is for all tabs. Add and modify as many tabs as needed. ######################
-      
-      div(style = "margin-top: 40px;",
-          tabsetPanel(
-            type = "tabs",
-            tabPanel(textOutput("panel1_title"),
-                     htmlOutput("plot_title"), 
-                     plotOutput("Plot_ID"),
-                     uiOutput("sampleStats"),
-                     htmlOutput("table_name"), verbatimTextOutput("aov"),
-                     htmlOutput("interpretation_text"), textOutput("conclusionText"), br(),
-                     uiOutput("resultsMessage")
-            ),
-            tabPanel(textOutput("panel2_title"), 
-                     
-            ),
-            tabPanel(textOutput("panel3_title"),
-                     
-            ),
-            tabPanel("Data", tableOutput("data"))
-          )
-      ), 
-      
-      div(
-        style="
+      )
+    ),
+    
+    
+    ###################### This section is for all tabs. Add and modify as many tabs as needed. ######################
+   
+    div(style = "margin-top: 40px;",
+        tabsetPanel(
+          type = "tabs",
+          tabPanel(textOutput("panel1_title"),
+                   htmlOutput("plot_title"), 
+                   plotOutput("Plot_ID"),
+                   uiOutput("sampleStats"),
+                   htmlOutput("table_name"), verbatimTextOutput("aov"),
+                   htmlOutput("interpretation_text"), textOutput("conclusionText"), br(),
+                   uiOutput("resultsMessage")
+          ),
+          tabPanel(textOutput("panel2_title"), 
+    
+          ),
+          tabPanel(textOutput("panel3_title"),
+  
+          ),
+          tabPanel("Data", tableOutput("data"))
+        )
+    ), 
+   
+   div(
+     style="
     width: 100%;
     margin-top: 40px;
     padding: 25px 0;
@@ -388,30 +372,30 @@ ui <- fluidPage(
     justify-content: center; /* Centrado del contenido */
     text-align: center;
   ",
-        
-        div(
-          class = "logo-row",
-          style="display: flex; gap: 10px; justify-content: center;",
-          tags$img(src='DEIOAC.png', class = "logo-img"),
-          tags$img(src='UPV.png',    class = "logo-img")
-        ),
-        
-        div(
-          class = "text-box",
-          style="max-width: 600px; margin-top: 10px; text-align: center;",
-          htmlOutput("creditos")
-        )
-      )
-  )
+     
+     div(
+       class = "logo-row",
+       style="display: flex; gap: 10px; justify-content: center;",
+       tags$img(src='DEIOAC.png', class = "logo-img"),
+       tags$img(src='UPV.png',    class = "logo-img")
+     ),
+     
+     div(
+       class = "text-box",
+       style="max-width: 600px; margin-top: 10px; text-align: center;",
+       htmlOutput("creditos")
+     )
+   )
+   )
 )
-
+        
 
 # Define server logic for random distribution app ----
 
 server <- function(input, output) {
   
   #Do not touch this. This is for opening and closing slider.
-  
+
   observeEvent(input$toggleSidebar, {
     shinyjs::toggleClass(id = "sidebarWrapper", class = "closed")
     shinyjs::toggleClass(id = "contentWrapper", class = "shifted")
@@ -427,7 +411,7 @@ server <- function(input, output) {
   output$panel1_title <- renderText({ tr("panel1", language()) })
   output$panel2_title <- renderText({ tr("panel2", language()) })
   output$panel3_title <- renderText({ tr("panel3", language()) })
-  
+
   output$plot_title <- renderUI({
     HTML(paste0("<h3 style='font-size:22px; font-weight:bold'>",
                 tr('plot', language()),
@@ -475,12 +459,12 @@ server <- function(input, output) {
                  choices = setNames( 
                    c("opt1", "opt2"), 
                    c(tr("option1", language()), tr("option2", language())) ) ) }
-  )
+    )
   
   # Reactive expression to generate the requested distribution ----
   # This is called whenever the inputs change. The output functions
   # defined below then use the value computed from this expression
-  
+
   ##################### DATASET CREATION ####################
   
   #Set as many parameters as selected. EXAMPLE OF HOW A DATASET COULD BE CALCULED. Set the parameters/values as you want. 
@@ -592,7 +576,7 @@ server <- function(input, output) {
       tr("conclusion2", language())
     }
   })
-  
+
   
   # This section is to set outputs, important to show what u want. 
   # Add as many outputs as you want to show (p-valor, confidences, conclusions ...)
@@ -610,14 +594,14 @@ server <- function(input, output) {
     conclusion()
   })
   
-  output$resultsMessage <- renderUI({
+    output$resultsMessage <- renderUI({
     HTML("<h3 style='color: gray; text-align: center;'>ADD AS MANY RESULTS AS YOU WANT</h3>")
   })
-  
+    
   output$data <- renderTable({
     d()
   })
-  
+    
 }
 
 # Create Shiny app ----
