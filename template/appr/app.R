@@ -164,6 +164,8 @@ ui <- fluidPage(
   
   useShinyjs(), # Activa funciones JS. 
   
+  # BOTONES PARA CAMBIAR DE IDIOMA EN LA PÁGINA. No tocarlos. 
+  
   absolutePanel(
     top = 10, right = 10, fixed = TRUE,
     actionButton("lang_es", "ES"),
@@ -171,8 +173,9 @@ ui <- fluidPage(
     actionButton("lang_va", "VAL")
   ),
   
-  # --------------------------
+  # ---------------------------------------------------------------------------
   # 1. CSS PARA LA ESTRUCTURA VISUAL DE LA TEMPLATE. NO TOCAR. 
+  
   tags$head(
     tags$style(HTML("
         #sidebarWrapper {
@@ -269,15 +272,17 @@ ui <- fluidPage(
     }
   "))
   ),
+  # -------------------------------FIN DEL CSS------------------------------------
   
-  
-  # Button that show parameters section. 
+  # Botón que abre/cierra el panel lateral. No tocar.
   
   if(showparams) {
     actionButton("toggleSidebar", textOutput("button_parameters"))
   },
   
-  div(id="sidebarWrapper", class= "closed",
+  # PANEL LATERAL DE PARÁMETROS. Añadir tantos parámetros como se desee. 
+  
+  div(id="sidebarWrapper", class= "opened",
       style="padding-top: 50px;",
       if(showparams) {
         div(
@@ -304,7 +309,7 @@ ui <- fluidPage(
   
   ############ This section is for the main body of your app #######################
   
-  div(id="contentWrapper",
+  div(id="contentWrapper", class = "shifted",
       
       ############### This section is for the title and main explanation. #######################
       
