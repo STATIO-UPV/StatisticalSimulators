@@ -363,7 +363,7 @@ ui <- fluidPage(
       div(style="margin-top:40px; text-align:center;margin-bottom:40px;",
           tags$img(src='DEIOAC.png', height=80),
           tags$img(src='UPV.png', height=80),
-          div(style="margin-top:15px;",   # 👈 añade un pequeño espacio
+          div(style="margin-top:15px;", 
               htmlOutput("creditos"))
       )
   )
