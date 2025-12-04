@@ -31,67 +31,67 @@ texts <- list(
     ES = "Título de tu aplicación", 
     EN = "Application Title", 
     VAL = "Títol de la teua aplicació" 
-    ), 
+  ), 
   explanation = c( 
     ES = "Breve explicación de la aplicación.", 
     EN = "Short explanation of the application.", 
     VAL = "Breu explicació de l'aplicació." 
-    ), 
+  ), 
   button_parameters = c( 
     ES = "Parámetros", 
     EN = "Parameters", 
     VAL = "Paràmetres" 
-    ), 
+  ), 
   text_downmenu= c( 
     ES = "1. Tu menú desplegable", 
     EN= "2. Your dropdown menu", 
     VAL= "3. El teu menú desplegable" 
-    ), 
+  ), 
   dropdown_label = c( 
     ES = "Título del menú desplegable", 
     EN = "Title of drop-down menu", 
     VAL = "Títol del menú desplegable" 
-    ), 
+  ), 
   option1 = c( 
     ES = "OPCIÓN 1", 
     EN = "OPTION 1", 
     VAL = "OPCIÓ 1" 
-    ), 
+  ), 
   option2 = c( 
     ES = "OPCIÓN 2", 
     EN = "OPTION 2", 
     VAL = "OPCIÓ 2" 
-    ), 
+  ), 
   slider1= c( 
     ES = "BARRA DESLIZANTE 1", 
     EN= "SLIDER 1", 
     VAL= "Barra lliscant 1" 
-    ), 
+  ), 
   slider2= c( 
     ES = "BARRA DESLIZANTE 2", 
     EN= "SLIDER 2", 
     VAL= "Barra lliscant 2" 
-    ), 
+  ), 
   slider3= c( 
     ES = "BARRA DESLIZANTE 3", 
     EN= "SLIDER 3", 
     VAL= "Barra lliscant 3" 
-    ), 
+  ), 
   slider4= c( 
     ES = "BARRA DESLIZANTE 4", 
     EN= "SLIDER 4", 
     VAL= "Barra lliscant 4" 
-    ), 
+  ), 
   slider5= c( 
     ES = "BARRA DESLIZANTE 5", 
     EN= "SLIDER 5", 
     VAL= "Barra lliscant 5" 
-    ), 
+  ), 
   slider6= c( 
     ES = "BARRA DESLIZANTE 6", 
     EN= "SLIDER 6", 
     VAL= "Barra lliscant 6" 
-    ), 
+  ), 
   panel1 = c( 
     ES = "Panel 1", 
     EN = "Panel 1", 
@@ -100,17 +100,17 @@ texts <- list(
     ES = "Panel 2", 
     EN = "Panel 2", 
     VAL = "Panell 2" 
-    ), 
+  ), 
   panel3 = c( 
     ES = "Panel 3", 
     EN = "Panel 3", 
     VAL = "Panell 3" 
-    ), 
+  ), 
   plot= c(
     ES= "Gráfico",
     EN= "Plot", 
     VAL= "Gràfic"
-    ),
+  ),
   plot_x= c(
     ES= "Valor_X",
     EN= "X_value",
@@ -163,7 +163,7 @@ texts <- list(
     developed by the DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.", 
     VAL= "STATIO és un Projecte d'Innovació i Millora Educativa (*PIME/25-26/562) 
     desenrotllat pel DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>." 
-    )
+  )
 )
 
 
@@ -329,15 +329,15 @@ ui <- fluidPage(
       
       # Título y explicación. NO MODIFICAR aquí, solo en el diccionario. 
       
-        div(style="padding-top:50px; margin-bottom:30px",
-            h2(textOutput("title"), align="center"),
-            div(style="display:flex; justify-content:center;",
-                div(style="border:2px solid #4a90e2; border-radius:12px; padding:12px; 
+      div(style="padding-top:50px; margin-bottom:30px",
+          h2(textOutput("title"), align="center"),
+          div(style="display:flex; justify-content:center;",
+              div(style="border:2px solid #4a90e2; border-radius:12px; padding:12px; 
                          max-width:600px; background:white; text-align:center;",
-                    uiOutput("explanation")
-                )
-            )
-        ),
+                  uiOutput("explanation")
+              )
+          )
+      ),
       
       # --------------------- TABS DE LA APLICACIÓN ---------------------
       
@@ -360,12 +360,33 @@ ui <- fluidPage(
       ),
       
       # Créditos y logos. NO MODIFICAR. 
-      div(style="margin-top:40px; text-align:center;margin-bottom:40px;",
-          tags$img(src='DEIOAC.png', height=80),
-          tags$img(src='UPV.png', height=80),
-          div(style="margin-top:15px;", 
-              htmlOutput("creditos"))
+      div(
+        style = "margin-top:40px; text-align:center; margin-bottom:40px;",
+        
+        # Contenedor horizontal obligatorio: marca UPV (izquierda) + subemisor (derecha)
+        div(
+          style = "display:flex; justify-content:center; align-items:center; gap:40px;",
+          
+          # Marca oficial UPV en composición horizontal (no el escudo solo)
+          tags$img(
+            src = 'UPV.png', 
+            style = "height:85px; max-height:85px;"
+          ),
+          
+          # Logotipo del subemisor DEIOAC (nunca mayor que la marca UPV)
+          tags$img(
+            src = 'DEIOAC.png',
+            style = "height:65px; max-height:70px;"
+          )
+        ),
+        
+        # Créditos
+        div(
+          style = "margin-top:15px;",
+          htmlOutput("creditos")
+        )
       )
+      
   )
 )
 
@@ -514,14 +535,14 @@ server <- function(input, output) {
                 tr('interpretation', language()),
                 "</h3>"))
   })
-
+  
   
   # DATOS DEL PANEL 4
   output$data <- renderTable({
     d()
   })
   
-# ELIMINAR ESTO CUANDO SE HAGA LA TEMPLATE. 
+  # ELIMINAR ESTO CUANDO SE HAGA LA TEMPLATE. 
   output$resultsMessage <- renderUI({
     HTML(paste0("<h3 style='color: gray; text-align: center;'>", tr("resultsMessage", language()), "</h3>"))
   })
