@@ -158,11 +158,11 @@ texts <- list(
       VAL = "AFIG ELS RESULTATS QUE VULGUES" ), 
   credits= c( 
     ES= "STATIO es un Proyecto de Innovación y Mejora Educativa (PIME/25-26/562) 
-    desarrollado por el DEIOAC-UPV.", 
+    desarrollado por el DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.", 
     EN= "STATIO is an Educational Innovation and Improvement Project (PIME/25-26/562) 
-    developed by the DEIOAC-UPV.", 
+    developed by the DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.", 
     VAL= "STATIO és un Projecte d'Innovació i Millora Educativa (*PIME/25-26/562) 
-    desenrotllat pel *DEIOAC-UPV" 
+    desenrotllat pel DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>." 
     )
 )
 
@@ -293,14 +293,16 @@ ui <- fluidPage(
     actionButton("toggleSidebar", textOutput("button_parameters"))
   },
   
-  # PANEL LATERAL DE PARÁMETROS. SE PUEDE MODIFICAR. 
   
   div(id="sidebarWrapper",
       style="padding-top: 50px;",
       if(showparams) {
         div(
           
-          h4(textOutput("text_downmenu")), uiOutput("dropdown_ui"),
+          # PANEL LATERAL DE PARÁMETROS. SE PUEDE MODIFICAR. 
+          
+          h4(textOutput("text_downmenu")), 
+          uiOutput("dropdown_ui"),
           
           # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
           # This is the way to link dropdown menus to parameters and other functions.
@@ -361,7 +363,8 @@ ui <- fluidPage(
       div(style="margin-top:40px; text-align:center;margin-bottom:40px;",
           tags$img(src='DEIOAC.png', height=80),
           tags$img(src='UPV.png', height=80),
-          htmlOutput("creditos")
+          div(style="margin-top:15px;",   # 👈 añade un pequeño espacio
+              htmlOutput("creditos"))
       )
   )
 )
@@ -392,7 +395,9 @@ server <- function(input, output) {
   output$panel2_title <- renderText({ tr("panel2", language()) })
   output$panel3_title <- renderText({ tr("panel3", language()) })
   output$button_parameters <- renderText({tr("button_parameters", language())})
+  
   output$text_downmenu <- renderText({ tr("text_downmenu", language()) })
+  
   output$creditos <- renderUI({ HTML(tr("credits", language())) })
   output$plot_title <- renderUI({
     HTML(paste0("<h3 style='font-size:22px; font-weight:bold'>",
