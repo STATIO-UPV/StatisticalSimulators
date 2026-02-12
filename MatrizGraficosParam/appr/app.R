@@ -5,7 +5,6 @@ library(tidyverse)
 library(car)
 library(agricolae)
 if (FALSE) { library(munsell) }
-library(sn)
 
 ######### SISTEMA DE TEXTOS Y TRADUCCIÓN #########
 showparams <- TRUE
@@ -34,9 +33,48 @@ texts <- list(
   label_sd = c(ES = "Desviación típica", EN = "Standard deviation", VAL = "Desviació típica"),
   label_iqr = c(ES = "Rango intercuartílico", EN = "Interquartile range", VAL = "Rang interquartílic"),
   label_skew = c(ES = "Asimetría", EN = "Skewness", VAL = "Asimetria"),
-  label_kurt_excess = c(ES = "Apuntamiento", EN = "Kurtosis", VAL = "Curtosi")
+  label_kurt_excess = c(ES = "Apuntamiento", EN = "Kurtosis", VAL = "Curtosi"),
+  credits= c(
+    ES= "STATIO es un Proyecto de Innovación y Mejora Educativa (PIME/25-26/562) desarrollado por el DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.",
+    EN= "STATIO is an Educational Innovation and Improvement Project (PIME/25-26/562) developed by the DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.",
+    VAL= "STATIO és un Projecte d'Innovació i Millora Educativa (*PIME/25-26/562) desenrotllat pel DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>."
+  )
 )
 tr <- function(id, lang) { texts[[id]][[lang]] }
+
+# ---- Skew-Normal "manual" (sustituto de sn::rsn) porque no está el paquete para WebAssembly ----
+rsn_manual <- function(n = 1, xi = 0, omega = 1, alpha = 0, tau = 0, dp = NULL) {
+  
+  if (!is.null(dp)) {
+    if (!missing(alpha))
+      stop("You cannot set both 'dp' and the component parameters")
+    xi <- dp[1]
+    omega <- dp[2]
+    alpha <- dp[3]
+    tau <- if (length(dp) > 3) dp[4] else 0
+  }
+  
+  if (!is.numeric(n) || length(n) != 1 || is.na(n) || n < 0) stop("'n' must be a non-negative number")
+  n <- as.integer(n)
+  if (!is.finite(omega) || omega <= 0) stop("'omega' must be > 0")
+  
+  delta <- alpha / sqrt(1 + alpha^2)
+  
+  if (tau == 0) {
+    tn <- matrix(rnorm(2 * n), 2, n, byrow = FALSE)
+    chi <- abs(tn[1, ])
+    nrv <- tn[2, ]
+    z <- delta * chi + sqrt(1 - delta^2) * nrv
+  } else {
+    truncN <- qnorm(runif(n, min = pnorm(-tau), max = 1))
+    z <- delta * truncN + sqrt(1 - delta^2) * rnorm(n)
+  }
+  
+  y <- as.vector(xi + omega * z)
+  attr(y, "family") <- "SN"
+  attr(y, "parameters") <- c(xi, omega, alpha, tau)
+  y
+}
 
 ############# USER INTERFACE #############
 ui <- fluidPage(
@@ -120,7 +158,7 @@ server <- function(input, output, session) {
 
   d <- reactive({
     set.seed(seed_val())
-    x <- rsn(input$n, xi=0, omega=1, alpha=input$alpha)
+    x <- rsn_manual(input$n, xi = 0, omega = 1, alpha = input$alpha)
     anom_val <- if (is.null(input$anom)) 0 else as.integer(input$anom)
     if (!is.null(anom_val) && anom_val > 0) {
       Q1 <- quantile(x, 0.25); Q3 <- quantile(x, 0.75); IQR_val <- IQR(x)
