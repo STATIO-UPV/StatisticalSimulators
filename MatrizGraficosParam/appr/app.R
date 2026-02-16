@@ -95,6 +95,7 @@ ui <- fluidPage(
     .table-panel th,.table-panel td{border:1px solid #ccc;padding:8px;text-align:left;}
     .table-panel th{background:#f7f7f7;}
   "))),
+  
   if (showparams) { actionButton("toggleSidebar", textOutput("button_parameters")) },
   div(id = "sidebarWrapper", style = "padding-top:50px;",
       if (showparams) {
@@ -104,29 +105,47 @@ ui <- fluidPage(
   ),
   # IMPORTANTE: TODO EL CONTENIDO QUE DEBE RESPETAR LA BARRA LATERAL
   # VA DENTRO DE contentWrapper
-  div(id = "contentWrapper", style = "margin-left:300px;",
+  div(id = "contentWrapper",
       div(style = "padding-top:50px; margin-bottom:30px",
           h2(textOutput("title"), align = "center"),
           div(style = "display:flex; justify-content:center;",
               div(style = "border:2px solid #4a90e2; border-radius:12px; padding:12px; max-width:600px; background:white; text-align:center;",
-                  uiOutput("explanation")))) ,
+                  uiOutput("explanation")
+              )
+          )
+      ),
+      
       htmlOutput("plot_title"),
+      
       fluidRow(
-        column(6, div(class="plot-panel", plotOutput("histPlot", height = "100%"))),
-        column(6, div(class="plot-panel", plotOutput("qqPlot", height = "100%")))
+        column(12,
+               div(class="plot-panel", plotOutput("histPlot", height = "100%")))
       ),
+      
       fluidRow(
-        column(6, div(class="plot-panel", plotOutput("boxPlot", height = "100%"))),
-        column(6, div(class="table-panel", uiOutput("sampleStats")))
+        column(12,
+               div(class="plot-panel", plotOutput("qqPlot", height = "100%")))
       ),
+      
+      fluidRow(
+        column(12,
+               div(class="plot-panel", plotOutput("boxPlot", height = "100%")))
+      ),
+      
+      fluidRow(
+        column(12,
+               div(class="table-panel", uiOutput("sampleStats")))
+      ),
+      
       div(style = "margin-top:30px; text-align:center; margin-bottom:30px;",
-          div(style = "display:flex; justify-content:center; align-items:center; gap:40px;",
+          div(class="logos-wrap",
               tags$img(src='UPV.png', style='height:85px; max-height:85px;'),
               tags$img(src='DEIOAC.png', style='height:65px; max-height:70px;')
           ),
           div(style = "margin-top:15px;", htmlOutput("creditos"))
       )
   )
+  
 )
 
 ########### SERVER ###########
