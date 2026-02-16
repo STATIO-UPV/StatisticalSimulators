@@ -1,23 +1,23 @@
 ---
-title: "Template"
-description: "Plantilla de los simuladores."
-date: 2025-11-02
-categories: ["Estadística descriptiva"]
+title: "Graphical method - Linear Programming"
+description: "Aplicación docente para resolver problemas de Programación Lineal con dos variables mediante el método gráfico, analizando restricciones, región factible y función objetivo."
+date: 2026-02-16
+categories: ["Investigación Operativa"]
 image: template.png
 ---
 
 **Description**
 
-Esto es una plantilla para generar nuevos simuladores
+Aplicación docente para resolver problemas de Programación Lineal con dos variables mediante el método gráfico, analizando restricciones, región factible y función objetivo
 
 **Authors**
 
-Julia Domingo Ajenjo, Alberto Altozano Fernández, Javier Marín Morales
+Adrián Colomer Granero, Vicent Giner Bosch
 
 **APP**
 
 ::: {style="margin-top: 20px; display: flex; gap: 10px;"}
-<a href="https://github.com/STATIO-UPV/StatisticalSimulators/template" target="_blank" class="btn btn-outline-secondary"> <i class="bi bi-github"></i> Source Code </a>
+<a href="https://github.com/STATIO-UPV/StatisticalSimulators/MetodoGrafico" target="_blank" class="btn btn-outline-secondary"> <i class="bi bi-github"></i> Source Code </a>
 
 <a href="simulator.html" class="btn btn-primary"> Go to Application <i class="bi bi-arrow-right-short"></i> </a>
 :::
