@@ -6,7 +6,9 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(purrr)
-library(lpSolve)
+library(boot)
+library(munsell)
+library(colorspace)
 
 EPS <- 1e-9
 `%||%` <- function(x, y) {
@@ -367,43 +369,47 @@ output$restricciones_ui <- renderUI({
     AB <- ineqs()
     cvec <- c(input$c1, input$c2)
     lpdat <- build_lp(AB$A, AB$b, cvec, nn = isTRUE(input$nn))
-    direction <- if (input$sense == "Max") "max" else "min"
-
+    
+    # boot::simplex uses maxi = TRUE for Maximization
+    is_max <- if (identical(input$sense, "Max")) TRUE else FALSE
+    
+    # boot::simplex parameters: a (objective), A1 (<= constraints matrix), b1 (<= rhs)
     res <- tryCatch(
-      lp(
-        direction = direction,
-        objective.in = lpdat$obj,
-        const.mat = lpdat$const_mat,
-        const.dir = rep("<=", nrow(lpdat$const_mat)),
-        const.rhs = lpdat$const_rhs
-      ),
+      boot::simplex(a = lpdat$obj,
+                    A1 = lpdat$const_mat,
+                    b1 = lpdat$const_rhs,
+                    maxi = is_max),
       error = function(e) e
     )
-
+    
     if (inherits(res, "error")) {
       return(list(ok = FALSE, status = NA_integer_, status_txt = "ERROR", message = res$message,
                   x = NA_real_, y = NA_real_, z = NA_real_))
     }
-
-    st <- res$status
+    
+    # Map boot::simplex status to your downstream rendering logic
+    # boot::simplex returns: 1 (optimal), -1 (infeasible), 0 (maxiter/unbounded)
+    st <- 0
+    if (res$solved == 1) {
+      st <- 0
+    } else if (res$solved == -1) {
+      st <- 2
+    } else {
+      st <- 3 
+    }
+    
     status_txt <- dplyr::case_when(
       st == 0 ~ "OPTIMAL",
       st == 2 ~ "INFEASIBLE",
       st == 3 ~ "UNBOUNDED",
-      st == 4 ~ "DEGENERATE",
-      st == 5 ~ "NUMFAILURE",
-      st == 6 ~ "USERABORT",
-      st == 7 ~ "TIMEOUT",
-      st == 9 ~ "PRESOLVED",
-      st == 25 ~ "ACCURACYERROR",
-      TRUE ~ paste0("STATUS_", st)
+      TRUE ~ "UNKNOWN"
     )
-
-    xy <- if (st == 0) lpdat$map(res$solution) else c(NA_real_, NA_real_)
+    
+    xy <- if (st == 0) lpdat$map(res$soln) else c(NA_real_, NA_real_)
     z  <- if (st == 0) sum(cvec * xy) else NA_real_
-
+    
     list(ok = TRUE, status = st, status_txt = status_txt,
-         x = xy[1], y = xy[2], z = z, message = res$solution)
+         x = xy[1], y = xy[2], z = z, message = "")
   })
 
     # --- Geometría: rectas, candidatos, vértices factibles ---
@@ -881,7 +887,7 @@ output$hover_inline <- renderUI({
         "<div class='mt-2'><b>%s</b> \\(x_1^* = %.3f,\\ x_2^* = %.3f\\), \\(z^* = %.3f\\).</div>%s",
         sprintf(tx[["opt_label"]], dir), sol$x, sol$y, sol$z, multi_msg
       ))),
-      tags$script("if(window.MathJax){MathJax.typesetPromise();}")
+      tags$script("if(window.MathJax) { if(MathJax.typesetPromise) { MathJax.typesetPromise(); } else if(MathJax.Hub) { MathJax.Hub.Queue(['Typeset', MathJax.Hub]); } }")
     ))
     }
 
