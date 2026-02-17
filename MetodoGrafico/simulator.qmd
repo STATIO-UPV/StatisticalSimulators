@@ -1,0 +1,15 @@
+---
+pagetitle: "Graphical Method"
+page-layout: custom
+title-block-style: none
+sidebar: false
+---
+
+```{=html}
+<iframe 
+  src="https://statio.webs.upv.es/StatisticalSimulators/MetodoGrafico/appsite" 
+  title="Graphical Method App" 
+  style="width: 100%; height: calc(100vh - 65px); border: none; display: block;" 
+  loading="lazy">
+</iframe>
+```
