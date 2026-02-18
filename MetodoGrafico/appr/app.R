@@ -349,46 +349,63 @@ output$restricciones_ui <- renderUI({
     list(A = A, b = b)
   })
 
-# --- Solver (lpSolve) ---
+  # --- Solver (boot::simplex arreglado) ---
   build_lp <- function(A, b, cvec, nn) {
-    if (isTRUE(nn)) {
-      list(obj = cvec,
-           const_mat = A,
-           const_rhs = b,
-           map = function(sol) sol[1:2])
+    # 1. Si las variables son libres (no nn), desdoblamos x = x+ - x-
+    if (!isTRUE(nn)) {
+      A <- cbind(A[, 1], -A[, 1], A[, 2], -A[, 2])
+      cvec <- c(cvec[1], -cvec[1], cvec[2], -cvec[2])
+      map_func <- function(sol) c(sol[1] - sol[2], sol[3] - sol[4])
     } else {
-      # variables libres: x = x+ - x-
-      A2 <- cbind(A[, 1], -A[, 1], A[, 2], -A[, 2])
-      obj2 <- c(cvec[1], -cvec[1], cvec[2], -cvec[2])
-      map2 <- function(sol) c(sol[1] - sol[2], sol[3] - sol[4])
-      list(obj = obj2, const_mat = A2, const_rhs = b, map = map2)
+      map_func <- function(sol) sol[1:2]
     }
+    
+    # 2. boot::simplex REQUIERE que el lado derecho (b) sea >= 0 siempre.
+    # El objeto A viene con la forma A x <= b.
+    # Filtramos y separamos según el signo de b:
+    idx_le <- which(b >= 0)
+    idx_ge <- which(b < 0)
+    
+    A1 <- if (length(idx_le) > 0) A[idx_le, , drop = FALSE] else NULL
+    b1 <- if (length(idx_le) > 0) b[idx_le] else NULL
+    
+    # Al invertir el signo para que el RHS sea positivo, la inecuación <= pasa a ser >= (A2, b2)
+    A2 <- if (length(idx_ge) > 0) -A[idx_ge, , drop = FALSE] else NULL
+    b2 <- if (length(idx_ge) > 0) -b[idx_ge] else NULL
+    
+    list(obj = cvec, A1 = A1, b1 = b1, A2 = A2, b2 = b2, map = map_func)
   }
-
+  
   solve_lp <- reactive({
     AB <- ineqs()
     cvec <- c(input$c1, input$c2)
     lpdat <- build_lp(AB$A, AB$b, cvec, nn = isTRUE(input$nn))
     
-    # boot::simplex uses maxi = TRUE for Maximization
     is_max <- if (identical(input$sense, "Max")) TRUE else FALSE
     
-    # boot::simplex parameters: a (objective), A1 (<= constraints matrix), b1 (<= rhs)
     res <- tryCatch(
       boot::simplex(a = lpdat$obj,
-                    A1 = lpdat$const_mat,
-                    b1 = lpdat$const_rhs,
+                    A1 = lpdat$A1,
+                    b1 = lpdat$b1,
+                    A2 = lpdat$A2,
+                    b2 = lpdat$b2,
                     maxi = is_max),
       error = function(e) e
     )
     
     if (inherits(res, "error")) {
+      # Si boot::simplex explota con NAs, es su bug clásico al toparse con 
+      # un problema No Acotado (Unbounded). Lo capturamos y forzamos el status 3.
+      if (grepl("NA|subscript|subscrit", res$message, ignore.case = TRUE)) {
+        return(list(ok = TRUE, status = 3, status_txt = "UNBOUNDED", 
+                    x = NA_real_, y = NA_real_, z = NA_real_, message = ""))
+      }
+      # Si es cualquier otro error, lo mostramos normalmente
       return(list(ok = FALSE, status = NA_integer_, status_txt = "ERROR", message = res$message,
                   x = NA_real_, y = NA_real_, z = NA_real_))
     }
     
-    # Map boot::simplex status to your downstream rendering logic
-    # boot::simplex returns: 1 (optimal), -1 (infeasible), 0 (maxiter/unbounded)
+    # Parseo normal si no ha crasheado
     st <- 0
     if (res$solved == 1) {
       st <- 0
