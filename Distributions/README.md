@@ -2,16 +2,16 @@
 This simulator is part of [STATIO](https://statio.webs.upv.es), the Educational Innovation and Improvement Project (PIME/25-26/562) developed by the DEIOAC–[Universitat Politècnica de València](http://www.upv.es).
 
 # Description
-This is the template to be used to generate new statistical simulators.
+This application is an interactive viewer to explore several common probability distributions and how their shapes change with different parameters and ranges.
 
 # Authors
-Julia Domingo Ajenjo, Alberto Altozano Fernández, Javier Marín Morales
+David Hervás Marín
 
 # App
-https://statio.webs.upv.es/StatisticalSimulators/template/
+https://statio.webs.upv.es/StatisticalSimulators/Distributions/
 
 # GitHub
-https://github.com/STATIO-UPV/StatisticalSimulators/tree/main/template
+https://github.com/STATIO-UPV/StatisticalSimulators/tree/main/Distributions
 
 # Technical Note
 This simulator has been developed using [ShinyLive](https://posit-dev.github.io/r-shinylive/). It allows Shiny to run entirely in the browser, without any need for a hosted server. The `appr` folder includes the Shiny R code. The `appsite` folder includes the ShinyLive build, including the `.html` file.

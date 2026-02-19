@@ -1,6 +1,6 @@
 ---
-title: "Template"
-description: "Plantilla de los simuladores."
+title: "Distributions"
+description: "Aplicación de distribuciones estadísticas"
 date: 2025-11-02
 categories: ["Estadística descriptiva"]
 image: template.png
@@ -8,16 +8,16 @@ image: template.png
 
 **Description**
 
-Esto es una plantilla para generar nuevos simuladores
+Aplicación con las funciones de probabilidad/densidad y de distribución de las distribuciones estadísticas más comunes.
 
 **Authors**
 
-Julia Domingo Ajenjo, Alberto Altozano Fernández, Javier Marín Morales
+David Hervás Marín
 
 **APP**
 
 ::: {style="margin-top: 20px; display: flex; gap: 10px;"}
-<a href="https://github.com/STATIO-UPV/StatisticalSimulators/template" target="_blank" class="btn btn-outline-secondary"> <i class="bi bi-github"></i> Source Code </a>
+<a href="https://github.com/STATIO-UPV/StatisticalSimulators/Distributions" target="_blank" class="btn btn-outline-secondary"> <i class="bi bi-github"></i> Source Code </a>
 
 <a href="simulator.html" class="btn btn-primary"> Go to Application <i class="bi bi-arrow-right-short"></i> </a>
 :::

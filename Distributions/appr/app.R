@@ -313,43 +313,43 @@ ui <- fluidPage(
 
   # Botón que abre/cierra el panel lateral. No MODIFICAR.
 
-  if(showparams) {
-    actionButton("toggleSidebar", textOutput("button_parameters"))
-  },
+  # if(showparams) {
+  #   actionButton("toggleSidebar", textOutput("button_parameters"))
+  # },
 
 
-  div(id="sidebarWrapper",
-      style="padding-top: 50px;",
-      if(showparams) {
-        div(
-
-          # PANEL LATERAL DE PARÁMETROS. SE PUEDE MODIFICAR.
-
-          h4(textOutput("text_downmenu")),
-          uiOutput("dropdown_ui"),
-
-          # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
-          # This is the way to link dropdown menus to parameters and other functions.
-
-          conditionalPanel(
-            condition = "input.server_id == 'opt1'",
-            uiOutput("slider1_ui"),
-            uiOutput("slider2_ui"),
-            uiOutput("slider3_ui")),
-
-          conditionalPanel(
-            condition = "input.server_id == 'opt2'",
-            uiOutput("slider4_ui"),
-            uiOutput("slider5_ui"),
-            uiOutput("slider6_ui") )
-        )
-      }
-  ),
+  # div(id="sidebarWrapper",
+  #     style="padding-top: 50px;",
+  #     if(showparams) {
+  #       div(
+  #
+  #         # PANEL LATERAL DE PARÁMETROS. SE PUEDE MODIFICAR.
+  #
+  #         h4(textOutput("text_downmenu")),
+  #         uiOutput("dropdown_ui"),
+  #
+  #         # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
+  #         # This is the way to link dropdown menus to parameters and other functions.
+  #
+  #         conditionalPanel(
+  #           condition = "input.server_id == 'opt1'",
+  #           uiOutput("slider1_ui"),
+  #           uiOutput("slider2_ui"),
+  #           uiOutput("slider3_ui")),
+  #
+  #         conditionalPanel(
+  #           condition = "input.server_id == 'opt2'",
+  #           uiOutput("slider4_ui"),
+  #           uiOutput("slider5_ui"),
+  #           uiOutput("slider6_ui") )
+  #       )
+  #     }
+  # ),
 
 
   # -------------------- CONTENIDO PRINCIPAL -------------------------------
 
-  div(id="contentWrapper", class = "shifted",
+  div(id="contentWrapper",
 
       # Título y explicación. NO MODIFICAR aquí, solo en el diccionario.
 
