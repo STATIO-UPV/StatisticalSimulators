@@ -532,7 +532,7 @@ server <- function(input, output, session) {
     updateNumericInput(session, "pbinom", label = tr("p_exito", lang))
     updateNumericInput(session, "pnegbinom", label = tr("p_exito", lang))
     updateNumericInput(session, "knegbinom", label = tr("n_eventos", lang))
-    updateNumericInput(session, "lambdapois", label = paste0(tr("n_eventos", lang), " (λ)"))
+    updateNumericInput(session, "lambdapois", label = paste0(tr("tasa", lang), " (λ)"))
 
     updateNumericInput(session, "Nhyper", label = tr("N", lang))
     updateNumericInput(session, "nhyper", label = tr("n_rep", lang))
