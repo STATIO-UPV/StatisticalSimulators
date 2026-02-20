@@ -25,10 +25,13 @@ ui <- page_sidebar(
   title = NULL,
   theme = bs_theme(bootswatch = "flatly"),
   sidebar = sidebar(
+    class = "my-sidebar",
     # En pantallas pequeñas el sidebar pasa a modo "offcanvas" (responsive)
     width = 400,
     open = "desktop",
     withMathJax(),
+
+    tags$div(class = "sidebar-scroll",
 
     # --- Restricciones (dinámicas) ---
     tags$div(
@@ -58,6 +61,7 @@ card(
       class = "mb-3",
       card_header(div(class = "h6 mb-0", textOutput("lbl_naturaleza_vars", container = span))),
       checkboxInput("nn", "\\(x_1\\ge 0,\\ x_2\\ge 0\\)", TRUE)
+    )
     )
   ),
 
@@ -123,7 +127,50 @@ card(
 ".bslib-sidebar-layout{--bslib-sidebar-width:400px;}\n",
 "@media (max-width: 992px){\n  .bslib-sidebar-layout{--bslib-sidebar-width:100vw;}\n  /* En móvil permitimos que la barra de controles haga wrap */\n  .plot-controls{flex-wrap:wrap !important; white-space:normal !important;}\n  .plot-controls .controls-left, .plot-controls .controls-right{flex-wrap:wrap !important; white-space:normal !important;}\n  .hover-chip{min-width:0; font-size:12px;}\n}\n",
 "#plt{min-height:420px;}\n",
-"@media (max-width: 768px){#plt{min-height:320px; height:55vh !important;}}\n"
+"@media (max-width: 768px){#plt{min-height:320px; height:55vh !important;}}\n
+/* === Responsive overrides (mobile-first) === */
+.plot-controls{
+  display:flex;
+  flex-wrap:wrap;
+  white-space:normal;
+  align-items:center;
+  gap:10px;
+}
+.plot-controls .controls-left,
+.plot-controls .controls-right{
+  display:flex;
+  flex-wrap:wrap;
+  white-space:normal;
+  align-items:center;
+  gap:10px;
+}
+/* Large screens: keep controls on one line */
+@media (min-width: 992px){
+  .plot-controls{
+    flex-wrap:nowrap;
+    white-space:nowrap;
+  }
+  .plot-controls .controls-left,
+  .plot-controls .controls-right{
+    flex-wrap:nowrap;
+    white-space:nowrap;
+  }
+}
+/* Small screens: allow inequality row inputs to wrap nicely */
+@media (max-width: 520px){
+  .ineq-row{
+    flex-wrap:wrap;
+  }
+  .ineq-row .shiny-input-container{
+    flex: 1 1 90px;
+    min-width: 80px;
+  }
+  .ineq-row .selectize-control{
+    flex: 1 1 90px;
+    min-width: 90px;
+  }
+}
+"
 )),
 
   
@@ -909,20 +956,30 @@ output$hover_inline <- renderUI({
     }
 
     if (sol$status == 2) {
-      return(HTML("<b style='color:#b22222'>Problema infactible (no hay región factible).</b>"))
+      l <- session$userData$lang(); tx <- session$userData$texts[[l]]
+      return(HTML(sprintf("<b style='color:#b22222'>%s</b>", tx[["status_infeasible"]])))
     }
 
     if (sol$status == 3) {
-      return(HTML("<b style='color:#b22222'>Problema no acotado (el óptimo no existe).</b>"))
+      l <- session$userData$lang(); tx <- session$userData$texts[[l]]
+      return(HTML(sprintf("<b style='color:#b22222'>%s</b>", tx[["status_unbounded"]])))
     }
 
-    HTML(sprintf("<b style='color:#b22222'>No se pudo determinar una solución óptima (status: %s).</b>", sol$status_txt))
+    l <- session$userData$lang(); tx <- session$userData$texts[[l]]
+    HTML(sprintf("<b style='color:#b22222'>%s</b>", sprintf(tx[["status_unknown_fmt"]], sol$status)))
   })
 
   # --- Fórmulas LaTeX ---
   output$formula <- renderUI({
     n <- n_restr()
     sn <- if (identical(input$sense, "Max")) "\\max" else "\\min"
+
+fmt_2term <- function(k1, k2) {
+  # Evita el " + -0.50 x_2": si k2 es negativo, imprime " - 0.50 x_2"
+  s2 <- if (k2 < 0) "-" else "+"
+  sprintf("%.2f\\,x_1 %s %.2f\\,x_2", k1, s2, abs(k2))
+}
+
 
     restr_lines <- lapply(seq_len(n), function(i) {
       si <- (input[[paste0("s", i)]] %||% "≤")
@@ -934,7 +991,7 @@ output$hover_inline <- renderUI({
       tags$div(
         class = "model-line",
         tags$span(class = "badge", style = paste0("background:", restr_colors[i]), paste0("R", i)),
-        HTML(sprintf("&nbsp;\\(%.2f\\,x_1 + %.2f\\,x_2\\ %s\\ %.2f\\)", a1, a2, s_ltx, bi))
+        HTML(sprintf("&nbsp;\\(%s\\ %s\\ %.2f\\)", fmt_2term(a1, a2), s_ltx, bi))
       )
     })
 
@@ -943,7 +1000,7 @@ output$hover_inline <- renderUI({
         tags$div(
           class = "model-line",
           tags$span(class = "badge", style = "background:#7F8C8D", "FO"),
-          HTML(sprintf("&nbsp;\\(%s\\, z = %.2f\\,x_1 + %.2f\\,x_2\\)", sn, num_or(input$c1, 0), num_or(input$c2, 0)))
+          HTML(sprintf("&nbsp;\\(%s\\, z = %s\\)", sn, fmt_2term(num_or(input$c1, 0), num_or(input$c2, 0))))
         ),
         tags$div(class = "mt-1", tags$b("s.a:")),
         tags$div(restr_lines)
@@ -1001,7 +1058,8 @@ output$hover_inline <- renderUI({
 .ui_original <- ui
 ui <- shiny::tagList(
 shiny::tags$head(
-  shiny::tags$script(shiny::HTML("
+    tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
+    shiny::tags$script(shiny::HTML("
     if (window.Shiny) {
       Shiny.addCustomMessageHandler('typeset-math', function(x) {
         if (window.MathJax) {
@@ -1048,12 +1106,14 @@ observeEvent(lang(), {
       lbl_show_labels = "Etiquetas",
       lbl_freeze_axes = "Fijar ejes",
       lbl_show_iso    = "Isocostes",
-      ph_restr_title = "Título (p. ej., Capacidad del recurso ...)",
+      ph_restr_title  = "Título (p. ej., Capacidad del recurso ...)",
       opt_label = "Óptimo (%s) por solver:",
       dir_max   = "máximo",
       dir_min   = "mínimo",
-      inf_msg   = "<div style='margin-top:6px;'><b>Infinitas soluciones:</b> todos los puntos del segmento \\(\\overline{%s%s}\\).</div>"
-
+      inf_msg   = "<div style='margin-top:6px;'><b>Infinitas soluciones:</b> todos los puntos del segmento \\(\\overline{%s%s}\\).</div>",
+      status_infeasible   = "Problema infactible (no hay región factible).",
+      status_unbounded    = "Problema no acotado (el óptimo no existe).",
+      status_unknown_fmt  = "No se pudo determinar una solución óptima (status: %s)."
     ),
     en = list(
       title = "Graphical Method - Linear Programming (2 variables)",
@@ -1066,12 +1126,14 @@ observeEvent(lang(), {
       lbl_show_labels = "Labels",
       lbl_freeze_axes = "Lock axes",
       lbl_show_iso    = "Isocosts",
-      ph_restr_title = "Title (e.g., Resource capacity ...)",
+      ph_restr_title  = "Title (e.g., Resource capacity ...)",
       opt_label = "Optimal (%s) by solver:",
       dir_max   = "maximum",
       dir_min   = "minimum",
-      inf_msg   = "<div style='margin-top:6px;'><b>Infinite solutions:</b> all points on the segment \\(\\overline{%s%s}\\).</div>"
-
+      inf_msg   = "<div style='margin-top:6px;'><b>Infinite solutions:</b> all points on the segment \\(\\overline{%s%s}\\).</div>",
+      status_infeasible   = "Infeasible problem (no feasible region).",
+      status_unbounded    = "Unbounded problem (the optimum does not exist).",
+      status_unknown_fmt  = "Could not determine an optimal solution (status: %s)."
     ),
     va = list(
       title = "Mètode Gràfic - Programació Lineal (2 variables)",
@@ -1084,17 +1146,18 @@ observeEvent(lang(), {
       lbl_show_labels = "Etiquetes",
       lbl_freeze_axes = "Fixar eixos",
       lbl_show_iso    = "Isocostos",
-      ph_restr_title = "Títol (p. ex., Capacitat del recurs ...)",
+      ph_restr_title  = "Títol (p. ex., Capacitat del recurs ...)",
       opt_label = "Òptim (%s) per solver:",
       dir_max   = "màxim",
       dir_min   = "mínim",
-      inf_msg   = "<div style='margin-top:6px;'><b>Infinites solucions:</b> tots els punts del segment \\(\\overline{%s%s}\\).</div>"
-
+      inf_msg   = "<div style='margin-top:6px;'><b>Infinites solucions:</b> tots els punts del segment \\(\\overline{%s%s}\\).</div>",
+      status_infeasible   = "Problema infactible (no hi ha regió factible).",
+      status_unbounded    = "Problema no acotat (l’òptim no existeix).",
+      status_unknown_fmt  = "No s’ha pogut determinar una solució òptima (status: %s)."
     )
   )
 
-
-  # Exponer idioma y diccionario al server original (para textos dinámicos sin romper scope)
+# Exponer idioma y diccionario al server original (para textos dinámicos sin romper scope)
   session$userData$lang  <- lang
   session$userData$texts <- texts
 
