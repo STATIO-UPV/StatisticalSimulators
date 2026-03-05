@@ -70,15 +70,78 @@ ui <- fluidPage(
   ),
 
   # CSS
-  tags$head(tags$style(HTML(
-    "#sidebarWrapper { width: 300px; background: #f7f7f7; padding: 15px; border-right: 1px solid #ddd; position: fixed; top: 0; bottom: 0; left: 0; overflow-y: auto; transition: transform .3s ease; z-index: 2000; transform: translateX(-100%);} \
-    #sidebarWrapper:not(.closed){ transform: translateX(0);} \
-    #contentWrapper { transition: margin-left .3s ease; margin-left: 0px;} \
-    #contentWrapper.shifted { margin-left: 300px;} \
-    #toggleSidebar { position: fixed; top: 10px; left: 10px; z-index: 3000;} "
-  ))),
-  tags$head(tags$style(HTML(".param-line{display:flex;align-items:center;gap:8px;margin-bottom:8px;} .param-line span{font-weight:bold;}"))),
+  tags$head(tags$style(HTML("
+  :root{
+    --sidebar-w: clamp(280px, 24vw, 420px);
+  }
 
+  #sidebarWrapper { 
+    width: var(--sidebar-w); 
+    background: #f7f7f7; 
+    padding: 15px; 
+    border-right: 1px solid #ddd; 
+    position: fixed; 
+    top: 0; 
+    bottom: 0; 
+    left: 0; 
+    overflow-y: auto; 
+    transition: transform .3s ease; 
+    z-index: 2000; 
+    transform: translateX(-100%);
+  }
+
+  #sidebarWrapper:not(.closed){ 
+    transform: translateX(0);
+  }
+
+  #contentWrapper { 
+    transition: margin-left .3s ease; 
+    margin-left: 0px;
+  }
+
+  #contentWrapper.shifted { 
+    margin-left: var(--sidebar-w);
+  }
+
+  #toggleSidebar { 
+    position: fixed; 
+    top: 10px; 
+    left: 10px; 
+    z-index: 3000;
+  }
+
+  /* Ajustar inputs al ancho del sidebar */
+  #sidebarWrapper .shiny-input-container,
+  #sidebarWrapper .form-control,
+  #sidebarWrapper .selectize-control,
+  #sidebarWrapper .irs{
+    width:100% !important;
+  }
+
+  /* Ajuste en monitores grandes */
+  @media (min-width: 1400px){
+    :root{ --sidebar-w: clamp(300px, 22vw, 460px); }
+  }
+
+  /* Ajuste en móvil */
+  @media (max-width: 480px){
+    :root{ --sidebar-w: 280px; }
+  }
+
+"))),
+  
+  tags$head(tags$style(HTML("
+  .param-line{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .param-line span{
+    font-weight:bold;
+  }
+"))),
+  
   # Botón que abre/cierra el panel lateral
   if(showparams) {
     actionButton("toggleSidebar", textOutput("button_parameters"))

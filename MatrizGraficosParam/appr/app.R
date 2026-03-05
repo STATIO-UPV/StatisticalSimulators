@@ -83,27 +83,69 @@ ui <- fluidPage(
     actionButton("lang_es", "ES"), actionButton("lang_en", "EN"), actionButton("lang_va", "VAL")
   ),
   
-  tags$head(tags$style(HTML(" 
-    #sidebarWrapper{width:300px;background:#f7f7f7;padding:15px;border-right:1px solid #ddd;position:fixed;top:0;bottom:0;left:0;overflow-y:auto;transition:transform .3s ease;z-index:2000;}
-    #sidebarWrapper.closed{transform:translateX(-100%);} 
-    #contentWrapper{transition:margin-left .3s ease;margin-left:300px;} 
-    #contentWrapper.shifted{margin-left:0px;} 
-    #toggleSidebar{position:fixed;top:10px;left:10px;z-index:3000;}
-    .plot-panel{background:#f2f2f2;border:1px solid #ddd;border-radius:6px;padding:6px;height:340px;}
-    .plot-panel .shiny-plot-output{height:100% !important;}
-    .table-panel{background:#f2f2f2;border:1px solid #ddd;border-radius:6px;padding:8px;}
-    .table-panel table{border-collapse:collapse;width:100%;font-size:1.15em;line-height:1.6;}
-    .table-panel th,.table-panel td{border:1px solid #ccc;padding:8px;text-align:left;}
-    .table-panel th{background:#f7f7f7;}
-    #mainContainer{
-      max-width: 1100px;      /* <-- ajusta: 1000-1400 suele ir bien */
-      margin: 0 auto;         /* centra */
-      padding: 0 12px;        /* aire lateral en pantallas pequeñas */
-    }
-    @media (min-width: 1200px){
-      #mainContainer{ padding-left: 20px; padding-right: 20px; }
-    }
-  "))),
+  tags$head(tags$style(HTML("
+  :root{
+    /* Responsive: min, ideal (vw), max */
+    --sidebar-w: clamp(280px, 24vw, 420px);
+  }
+
+  #sidebarWrapper{
+    width: var(--sidebar-w);
+    background:#f7f7f7;
+    padding:15px;
+    border-right:1px solid #ddd;
+    position:fixed;
+    top:0;bottom:0;left:0;
+    overflow-y:auto;
+    transition:transform .3s ease;
+    z-index:2000;
+  }
+
+  #sidebarWrapper.closed{transform:translateX(-100%);}
+
+  #contentWrapper{
+    transition:margin-left .3s ease;
+    margin-left: var(--sidebar-w);
+  }
+
+  #contentWrapper.shifted{margin-left:0px;}
+
+  #toggleSidebar{position:fixed;top:10px;left:10px;z-index:3000;}
+
+  /* (Opcional) Ajuste en monitores muy grandes */
+  @media (min-width: 1400px){
+    :root{ --sidebar-w: clamp(300px, 22vw, 460px); }
+  }
+
+  /* (Opcional) Móvil: un ancho más contenido */
+  @media (max-width: 480px){
+    :root{ --sidebar-w: 280px; }
+  }
+
+  /* Ajuste de elementos internos al ancho del sidebar */
+  #sidebarWrapper .shiny-input-container,
+  #sidebarWrapper .form-control,
+  #sidebarWrapper .selectize-control,
+  #sidebarWrapper .irs{
+    width:100% !important;
+  }
+
+  .plot-panel{background:#f2f2f2;border:1px solid #ddd;border-radius:6px;padding:6px;height:340px;}
+  .plot-panel .shiny-plot-output{height:100% !important;}
+  .table-panel{background:#f2f2f2;border:1px solid #ddd;border-radius:6px;padding:8px;}
+  .table-panel table{border-collapse:collapse;width:100%;font-size:1.15em;line-height:1.6;}
+  .table-panel th,.table-panel td{border:1px solid #ccc;padding:8px;text-align:left;}
+  .table-panel th{background:#f7f7f7;}
+
+  #mainContainer{
+    max-width:1300px;
+    margin:0 auto;
+    padding:0 12px;
+  }
+  @media (min-width: 1200px){
+    #mainContainer{ padding-left:20px; padding-right:20px; }
+  }
+"))),
   
   
   
