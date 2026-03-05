@@ -313,38 +313,18 @@ ui <- fluidPage(
 
   # Botón que abre/cierra el panel lateral. No MODIFICAR.
 
-  # if(showparams) {
-  #   actionButton("toggleSidebar", textOutput("button_parameters"))
-  # },
+   if(showparams) {
+     if (showparams) {
+       tagList(
+         actionButton("toggleSidebar", textOutput("button_parameters")),
+         div(
+         )
+       )
+     } else {
+       NULL
+     }
+   },
 
-
-  # div(id="sidebarWrapper",
-  #     style="padding-top: 50px;",
-  #     if(showparams) {
-  #       div(
-  #
-  #         # PANEL LATERAL DE PARÁMETROS. SE PUEDE MODIFICAR.
-  #
-  #         h4(textOutput("text_downmenu")),
-  #         uiOutput("dropdown_ui"),
-  #
-  #         # Sliders only if OPTION 1 is selected in dropdown. You can delete one and only select sliders if needed.
-  #         # This is the way to link dropdown menus to parameters and other functions.
-  #
-  #         conditionalPanel(
-  #           condition = "input.server_id == 'opt1'",
-  #           uiOutput("slider1_ui"),
-  #           uiOutput("slider2_ui"),
-  #           uiOutput("slider3_ui")),
-  #
-  #         conditionalPanel(
-  #           condition = "input.server_id == 'opt2'",
-  #           uiOutput("slider4_ui"),
-  #           uiOutput("slider5_ui"),
-  #           uiOutput("slider6_ui") )
-  #       )
-  #     }
-  # ),
 
 
   # -------------------- CONTENIDO PRINCIPAL -------------------------------
@@ -369,9 +349,9 @@ ui <- fluidPage(
 
       #First row
       fixedRow(
-        column(4, plotlyOutput("binomplot")),
-        column(4, plotlyOutput("negbinomplot")),
-        column(4, plotlyOutput("poisplot")
+        column(4, plotOutput("binomplot")),
+        column(4, plotOutput("negbinomplot")),
+        column(4, plotOutput("poisplot")
         )),
       #Second row
       fixedRow(
@@ -408,22 +388,23 @@ ui <- fluidPage(
                  numericInput("knegbinom", tr("n_eventos", "ES"), value = 1, step = 1))
         ),
         column(4,
-               numericInput("lambdapois",
-                            HTML(tr('n_eventos', "ES"), "λ"),
-                            value = 5, step = 0.5
+               numericInput(
+                 "lambdapois",
+                 HTML(paste0(tr("tasa", "ES"), " (&lambda;)")),
+                 value = 5, step = 0.5
                )
         )
       ),
       #Fifth row
       fixedRow(
         column(width=4,
-               plotlyOutput("hyperplot")
+               plotOutput("hyperplot")
         ),
         column(width=4,
-               plotlyOutput("gausplot")
+               plotOutput("gausplot")
         ),
         column(width=4,
-               plotlyOutput("expplot")
+               plotOutput("expplot")
         )
       ),
       #Sixth row
@@ -511,13 +492,22 @@ ui <- fluidPage(
 ############################ SERVER #######################################
 
 server <- function(input, output, session) {
-
+  
+  tick <- function(session, ms = 10) {
+    shiny::invalidateLater(ms, session)
+    TRUE
+  }
+  
+  `%||%` <- function(a, b) if (is.null(a) || is.na(a)) b else a
+  
   # ---------------- Manejo del panel lateral. NO MODIFICAR. --------------------
-  observeEvent(input$toggleSidebar, {
-    shinyjs::toggleClass(id = "sidebarWrapper", class = "closed")
-    shinyjs::toggleClass(id = "contentWrapper", class = "shifted")
-    shinyjs::runjs("setTimeout(function() { $(window).trigger('resize'); }, 350);")
-  })
+  if (showparams) {
+    observeEvent(input$toggleSidebar, {
+      shinyjs::toggleClass(id = "sidebarWrapper", class = "closed")
+      shinyjs::toggleClass(id = "contentWrapper", class = "shifted")
+      shinyjs::runjs("setTimeout(function() { $(window).trigger('resize'); }, 350);")
+    })
+  }
 
   # ---------------- IDIOMA. NO MODIFICAR. -----------------
   language <- reactiveVal("ES")
@@ -563,78 +553,152 @@ server <- function(input, output, session) {
 
   # ---------------- PARÁMETROS DINÁMICOS. SE PUEDEN AÑADIR/ELIMINAR SI HACEN FALTA. ----------------
 
-  output$binomplot <- renderPlotly({
-    x <- seq(input$minbinom, input$maxbinom)
-    if(input$fdistr){
-      y <- pbinom(x, input$nbinom, input$pbinom)
-    } else{
-      y <- dbinom(x, input$nbinom, input$pbinom)
-    }
+  output$binomplot <- renderPlot({
+    req(tick(session))
+    minx <- input$minbinom %||% 0
+    maxx <- input$maxbinom %||% 20
+    n    <- input$nbinom   %||% 20
+    p    <- input$pbinom   %||% 0.5
+    
+    # checkbox: NULL -> FALSE, FALSE se respeta
+    fd <- isTRUE(input$fdistr)
+    
+    x <- seq(minx, maxx)
+    y <- if (fd) pbinom(x, n, p) else dbinom(x, n, p)
+    
     df <- signif(data.frame(x, y), 3)
-    ggplotly(ggplot(df, aes(x=x, y=y)) + geom_point() + ggtitle(tr("binomial", language())) + xlab("X") + ylab(ifelse(input$fdistr, "P(X\u2264x)", "P(X=x)")))
-    #plot(x, y, type="h", las=1, ylab="P(X=x)", xlab="X", main="Binomial")
+    
+    ggplot(df, aes(x = x, y = y)) +
+      geom_point() +
+      ggtitle(tr("binomial", language())) +
+      xlab("X") +
+      ylab(ifelse(fd, "P(X≤x)", "P(X=x)"))
+    
   })
 
-  output$negbinomplot <- renderPlotly({
-    x <- seq(input$mingeom, input$maxgeom)
-    if(input$fdistr){
-      y <- pnbinom(x, size=input$knegbinom, prob=input$pnegbinom)
-    } else{
-      y <- dnbinom(x, size=input$knegbinom, prob=input$pnegbinom)
-    }
+  output$negbinomplot <- renderPlot({
+    req(tick(session))
+    minx <- input$mingeom   %||% 0
+    maxx <- input$maxgeom   %||% 20
+    k    <- input$knegbinom %||% 1
+    p    <- input$pnegbinom %||% 0.5
+    fd   <- isTRUE(input$fdistr)
+    
+    x <- seq(minx, maxx)
+    y <- if (fd) pnbinom(x, size = k, prob = p) else dnbinom(x, size = k, prob = p)
+    
     df <- signif(data.frame(x, y), 3)
-    ggplotly(ggplot(df, aes(x=x, y=y)) + geom_point() + ggtitle(tr("binomial_neg", language())) + xlab("X") + ylab(ifelse(input$fdistr, "P(X\u2264x)", "P(X=x)")))
-    #plot(x, y, type="h", las=1, ylab="P(X=x)", xlab="X", main="Binomial negativa \n (Geométrica para k=1)")
+    
+    
+    ggplot(df, aes(x = x, y = y)) +
+      geom_point() +
+      ggtitle(tr("binomial_neg", language())) +
+      xlab("X") +
+      ylab(ifelse(fd, "P(X\u2264x)", "P(X=x)"))
+    
   })
 
-  output$poisplot <- renderPlotly({
-    x <- seq(input$minpois, input$maxpois)
-    if(input$fdistr){
-      y <- ppois(x, input$lambdapois)
-    } else{
-      y <- dpois(x, input$lambdapois)
-    }
+  output$poisplot <- renderPlot({
+    req(tick(session))
+    minx <- input$minpois    %||% 0
+    maxx <- input$maxpois    %||% 20
+    lam  <- input$lambdapois %||% 5
+    fd   <- isTRUE(input$fdistr)
+  
+    
+    x <- seq(minx, maxx)
+    y <- if (fd) ppois(x, lam) else dpois(x, lam)
+    
     df <- signif(data.frame(x, y), 3)
-    ggplotly(ggplot(df, aes(x=x, y=y)) + geom_point() + ggtitle(tr("poisson", language())) + xlab("X") + ylab(ifelse(input$fdistr, "P(X\u2264x)", "P(X=x)")))
-    #plot(x, y, type="h", las=1, ylab="P(X=x)", xlab="X", main="Poisson")
+    
+  
+    ggplot(df, aes(x = x, y = y)) +
+      geom_point() +
+      ggtitle(tr("poisson", language())) +
+      xlab("X") +
+      ylab(ifelse(fd, "P(X\u2264x)", "P(X=x)"))
+    
   })
 
-  output$hyperplot <- renderPlotly({
-    x <- seq(input$minhyper, input$maxhyper)
-    if(input$fdistr){
-      y <- phyper(x, input$Nhyper*input$phyper, input$Nhyper*(1-input$phyper), input$nhyper)
-    } else{
-      y <- dhyper(x, input$Nhyper*input$phyper, input$Nhyper*(1-input$phyper), input$nhyper)
-    }
-    df <- signif(data.frame(x, y), 3)
-    ggplotly(ggplot(df, aes(x=x, y=y)) + geom_point() + ggtitle(tr("hipergeom", language())) + xlab("X") + ylab(ifelse(input$fdistr, "P(X\u2264x)", "P(X=x)")))
-    #plot(x, y, type="h", las=1, ylab="P(X=x)", xlab="X", main="Hipergeométrica")
+  output$hyperplot <- renderPlot({
+    req(tick(session))
+    minx <- input$minhyper %||% 0
+    maxx <- input$maxhyper %||% 20
+    N    <- input$Nhyper   %||% 40
+    n    <- input$nhyper   %||% 20
+    p    <- input$phyper   %||% 0.5
+    fd   <- isTRUE(input$fdistr)
+    
+    
+    # phyper/dhyper esperan enteros. Convertimos a enteros razonables:
+    N <- as.integer(round(N))
+    n <- as.integer(round(n))
+    m <- as.integer(round(N * p))              # "éxitos" en la población
+    m <- max(0L, min(m, N))                    # acotar 0..N
+    n <- max(0L, min(n, N))                    # acotar 0..N
+    k <- as.integer(round(minx)):as.integer(round(maxx))
+    
+    y <- if (fd) phyper(k, m, N - m, n) else dhyper(k, m, N - m, n)
+    
+    df <- signif(data.frame(x = k, y = y), 3)
+    
+  
+    ggplot(df, aes(x = x, y = y)) +
+      geom_point() +
+      ggtitle(tr("hipergeom", language())) +
+      xlab("X") +
+      ylab(ifelse(fd, "P(X\u2264x)", "P(X=x)"))
+  
   })
 
-  output$gausplot <- renderPlotly({
-    x <- seq(input$mingaus, input$maxgaus, 0.1)
-    if(input$fdistr){
-      y <- pnorm(x, input$mugaus, input$sdgaus)
-    } else{
-      y <- dnorm(x, input$mugaus, input$sdgaus)
-    }
+  output$gausplot <- renderPlot({
+    req(tick(session))
+    minx <- input$mingaus %||% -5
+    maxx <- input$maxgaus %||%  5
+    mu   <- input$mugaus  %||%  0
+    sd   <- input$sdgaus  %||%  1
+    fd   <- isTRUE(input$fdistr)
+    
+    sd <- if (is.null(sd) || is.na(sd) || sd <= 0) 1 else sd
+    
+    x <- seq(minx, maxx, by = 0.1)
+    y <- if (fd) pnorm(x, mu, sd) else dnorm(x, mu, sd)
+    
     df <- signif(data.frame(x, y), 3)
-    ggplotly(ggplot(df, aes(x=x, y=y)) + geom_line() + ggtitle(tr("normal", language())) + xlab("X") + ylab(ifelse(input$fdistr, "P(X\u2264x)", "f(x)")))
-    #plot(x, y, type="l", las=1, ylab="Densidad", xlab="X", main="Normal")
+    
+
+    ggplot(df, aes(x = x, y = y)) +
+      geom_line() +
+      ggtitle(tr("normal", language())) +
+      xlab("X") +
+      ylab(ifelse(fd, "P(X\u2264x)", "f(x)"))
+    
   })
 
-  output$expplot <- renderPlotly({
-    x <- seq(input$minexp, input$maxexp, 0.1)
-    if(input$fdistr){
-      y <- pexp(x, input$rateexp)
-    } else{
-      y <- dexp(x, input$rateexp)
-    }
+  output$expplot <- renderPlot({
+    req(tick(session))
+    minx <- input$minexp  %||% 0
+    maxx <- input$maxexp  %||% 20
+    rate <- input$rateexp %||% 0.5
+    fd   <- isTRUE(input$fdistr)
+    
+    rate <- if (is.null(rate) || is.na(rate) || rate <= 0) 0.5 else rate
+    
+    x <- seq(minx, maxx, by = 0.1)
+    y <- if (fd) pexp(x, rate = rate) else dexp(x, rate = rate)
+    
     df <- signif(data.frame(x, y), 3)
-    ggplotly(ggplot(df, aes(x=x, y=y)) + geom_line() + ggtitle(tr("exponencial", language())) + xlab("X") + ylab(ifelse(input$fdistr, "P(X\u2264x)", "f(x)")))
-    #plot(x, y, type="l", las=1, ylab="Densidad", xlab="X", main="Exponencial")
+    
+    ggplot(df, aes(x = x, y = y)) +
+      geom_line() +
+      ggtitle(tr("exponencial", language())) +
+      xlab("X") +
+      ylab(ifelse(fd, "P(X\u2264x)", "f(x)"))
+    
   })
+  
 }
+
 
 # Create Shiny app ----
 shinyApp(ui, server)

@@ -82,6 +82,7 @@ ui <- fluidPage(
   absolutePanel(top = 10, right = 10, fixed = TRUE,
     actionButton("lang_es", "ES"), actionButton("lang_en", "EN"), actionButton("lang_va", "VAL")
   ),
+  
   tags$head(tags$style(HTML(" 
     #sidebarWrapper{width:300px;background:#f7f7f7;padding:15px;border-right:1px solid #ddd;position:fixed;top:0;bottom:0;left:0;overflow-y:auto;transition:transform .3s ease;z-index:2000;}
     #sidebarWrapper.closed{transform:translateX(-100%);} 
@@ -94,7 +95,17 @@ ui <- fluidPage(
     .table-panel table{border-collapse:collapse;width:100%;font-size:1.15em;line-height:1.6;}
     .table-panel th,.table-panel td{border:1px solid #ccc;padding:8px;text-align:left;}
     .table-panel th{background:#f7f7f7;}
+    #mainContainer{
+      max-width: 1100px;      /* <-- ajusta: 1000-1400 suele ir bien */
+      margin: 0 auto;         /* centra */
+      padding: 0 12px;        /* aire lateral en pantallas pequeñas */
+    }
+    @media (min-width: 1200px){
+      #mainContainer{ padding-left: 20px; padding-right: 20px; }
+    }
   "))),
+  
+  
   
   if (showparams) { actionButton("toggleSidebar", textOutput("button_parameters")) },
   div(id = "sidebarWrapper", style = "padding-top:50px;",
@@ -106,43 +117,43 @@ ui <- fluidPage(
   # IMPORTANTE: TODO EL CONTENIDO QUE DEBE RESPETAR LA BARRA LATERAL
   # VA DENTRO DE contentWrapper
   div(id = "contentWrapper",
-      div(style = "padding-top:50px; margin-bottom:30px",
-          h2(textOutput("title"), align = "center"),
-          div(style = "display:flex; justify-content:center;",
-              div(style = "border:2px solid #4a90e2; border-radius:12px; padding:12px; max-width:600px; background:white; text-align:center;",
-                  uiOutput("explanation")
+      
+      div(id="mainContainer",
+          
+          div(style = "padding-top:50px; margin-bottom:30px",
+              h2(textOutput("title"), align = "center"),
+              div(style = "display:flex; justify-content:center;",
+                  div(style = "border:2px solid #4a90e2; border-radius:12px; padding:12px; max-width:600px; background:white; text-align:center;",
+                      uiOutput("explanation")
+                  )
               )
-          )
-      ),
-      
-      htmlOutput("plot_title"),
-      
-      fluidRow(
-        column(12,
-               div(class="plot-panel", plotOutput("histPlot", height = "100%")))
-      ),
-      
-      fluidRow(
-        column(12,
-               div(class="plot-panel", plotOutput("qqPlot", height = "100%")))
-      ),
-      
-      fluidRow(
-        column(12,
-               div(class="plot-panel", plotOutput("boxPlot", height = "100%")))
-      ),
-      
-      fluidRow(
-        column(12,
-               div(class="table-panel", uiOutput("sampleStats")))
-      ),
-      
-      div(style = "margin-top:30px; text-align:center; margin-bottom:30px;",
-          div(class="logos-wrap",
-              tags$img(src='UPV.png', style='height:85px; max-height:85px;'),
-              tags$img(src='DEIOAC.png', style='height:65px; max-height:70px;')
           ),
-          div(style = "margin-top:15px;", htmlOutput("creditos"))
+          
+          htmlOutput("plot_title"),
+          
+          fluidRow(
+            column(12, div(class="plot-panel", plotOutput("histPlot", height="100%")))
+          ),
+          
+          fluidRow(
+            column(12, div(class="plot-panel plot-panel-box", plotOutput("boxPlot", height="100%")))
+          ),
+          
+          fluidRow(
+            column(12, div(class="plot-panel", plotOutput("qqPlot", height="100%")))
+          ),
+          
+          fluidRow(
+            column(12, div(class="table-panel", uiOutput("sampleStats")))
+          ),
+          
+          div(style = "margin-top:30px; text-align:center; margin-bottom:30px;",
+              div(class="logos-wrap",
+                  tags$img(src='UPV.png', style='height:85px; max-height:85px;'),
+                  tags$img(src='DEIOAC.png', style='height:65px; max-height:70px;')
+              ),
+              div(style = "margin-top:15px;", htmlOutput("creditos"))
+          )
       )
   )
   
