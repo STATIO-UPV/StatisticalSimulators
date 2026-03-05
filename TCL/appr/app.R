@@ -206,92 +206,140 @@ ui <- fluidPage(
   
   tags$head(
     tags$script(HTML("
-      $(document).on('click', '.spoiler', function() {
-        $(this).toggleClass('revealed');
-      });
-    ")),
+    $(document).on('click', '.spoiler', function() {
+      $(this).toggleClass('revealed');
+    });
+  ")),
     tags$style(HTML("
-        #sidebarWrapper {
-          width: 300px; background: #f7f7f7; padding: 15px; border-right: 1px solid #ddd;
-          position: fixed; top: 0; bottom: 0; left: 0; overflow-y: auto;
-          transition: transform .3s ease; z-index: 2000; transform: translateX(-100%);
-        }
-        #sidebarWrapper:not(.closed) { transform: translateX(0); }
-        #contentWrapper { transition: margin-left .3s ease; margin-left: 0px; }
-        #contentWrapper.shifted { margin-left: 300px; }
-        #toggleSidebar { position: fixed; top: 10px; left: 10px; z-index: 3000; }
-        .logo-row { display: flex; gap: 6px; }
-        .logo-img { height: 80px; transition: height 0.3s ease; }
-        
-        /* ESTILOS DE CAJAS INFORMATIVAS */
-        .result-box { 
-          background-color: #fff; 
-          border: 1px solid #ccc; 
-          padding: 15px; 
-          border-radius: 8px; 
-          margin-top: 30px; 
-          box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-        }
-        
-        .didactic-box { 
-          background-color: #e8f4f8; 
-          border-left: 5px solid #4a90e2; 
-          padding: 15px; 
-          border-radius: 4px; 
-          margin-top: 15px; 
-          font-size: 0.95em; 
-          line-height: 1.5; 
-          color: #333; 
-        }
-        
-        .exercise1-box { 
-          background-color: #e8f5e9; /* Verde muy claro */
-          border-left: 5px solid #4caf50; /* Verde */
-          padding: 15px; 
-          border-radius: 4px; 
-          margin-top: 15px; 
-          font-size: 0.95em; 
-          line-height: 1.5; 
-          color: #333; 
-        }
-        
-        .exercise2-box { 
-          background-color: #fff8e1; /* Ámbar muy claro */
-          border-left: 5px solid #ffc107; /* Ámbar/Naranja */
-          padding: 15px; 
-          border-radius: 4px; 
-          margin-top: 15px; 
-          font-size: 0.95em; 
-          line-height: 1.5; 
-          color: #333; 
-        }
-        
-        /* ESTILO SPOILER */
-        .spoiler {
-          background-color: #000;
-          color: #000;
-          padding: 0 4px;
-          border-radius: 3px;
-          cursor: pointer;
-          user-select: none;
-        }
-        
-        .spoiler:hover {
-          background-color: #333;
-        }
-        
-        .spoiler.revealed {
-          background-color: transparent;
-          color: #000;
-          font-weight: bold;
-          cursor: text;
-          user-select: text;
-        }
 
-        .exercise1-box strong { color: #2e7d32; }
-        .exercise2-box strong { color: #d39e00; }
-        .didactic-box strong { color: #2c5e8f; }
-    "))
+      :root{
+        --sidebar-w: clamp(280px, 24vw, 420px);
+      }
+
+      #sidebarWrapper {
+        width: var(--sidebar-w);
+        background: #f7f7f7;
+        padding: 15px;
+        border-right: 1px solid #ddd;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        overflow-y: auto;
+        transition: transform .3s ease;
+        z-index: 2000;
+        transform: translateX(-100%);
+      }
+
+      #sidebarWrapper:not(.closed) { 
+        transform: translateX(0); 
+      }
+
+      #contentWrapper { 
+        transition: margin-left .3s ease; 
+        margin-left: 0px; 
+      }
+
+      #contentWrapper.shifted { 
+        margin-left: var(--sidebar-w); 
+      }
+
+      #toggleSidebar { 
+        position: fixed; 
+        top: 10px; 
+        left: 10px; 
+        z-index: 3000; 
+      }
+
+      .logo-row { display: flex; gap: 6px; }
+      .logo-img { height: 80px; transition: height 0.3s ease; }
+
+      /* AJUSTAR INPUTS AL ANCHO DEL SIDEBAR */
+      #sidebarWrapper .shiny-input-container,
+      #sidebarWrapper .form-control,
+      #sidebarWrapper .selectize-control,
+      #sidebarWrapper .irs{
+        width:100% !important;
+      }
+
+      /* ESTILOS DE CAJAS INFORMATIVAS */
+      .result-box { 
+        background-color: #fff; 
+        border: 1px solid #ccc; 
+        padding: 15px; 
+        border-radius: 8px; 
+        margin-top: 30px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+      }
+
+      .didactic-box { 
+        background-color: #e8f4f8; 
+        border-left: 5px solid #4a90e2; 
+        padding: 15px; 
+        border-radius: 4px; 
+        margin-top: 15px; 
+        font-size: 0.95em; 
+        line-height: 1.5; 
+        color: #333; 
+      }
+
+      .exercise1-box { 
+        background-color: #e8f5e9;
+        border-left: 5px solid #4caf50;
+        padding: 15px; 
+        border-radius: 4px; 
+        margin-top: 15px; 
+        font-size: 0.95em; 
+        line-height: 1.5; 
+        color: #333; 
+      }
+
+      .exercise2-box { 
+        background-color: #fff8e1;
+        border-left: 5px solid #ffc107;
+        padding: 15px; 
+        border-radius: 4px; 
+        margin-top: 15px; 
+        font-size: 0.95em; 
+        line-height: 1.5; 
+        color: #333; 
+      }
+
+      /* ESTILO SPOILER */
+      .spoiler {
+        background-color: #000;
+        color: #000;
+        padding: 0 4px;
+        border-radius: 3px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .spoiler:hover { background-color: #333; }
+
+      .spoiler.revealed {
+        background-color: transparent;
+        color: #000;
+        font-weight: bold;
+        cursor: text;
+        user-select: text;
+      }
+
+      .exercise1-box strong { color: #2e7d32; }
+      .exercise2-box strong { color: #d39e00; }
+      .didactic-box strong { color: #2c5e8f; }
+
+      /* AJUSTE EXTRA EN MONITORES MUY GRANDES */
+      @media (min-width: 1400px){
+        :root{ --sidebar-w: clamp(300px, 22vw, 460px); }
+      }
+
+      /* AJUSTE EN MÓVIL */
+      @media (max-width: 480px){
+        :root{ --sidebar-w: 280px; }
+      }
+
+  "))
   ),
   
   if(showparams) {

@@ -1025,6 +1025,12 @@ fmt_2term <- function(k1, k2) {
     shiny::actionButton("lang_en", "EN"),
     shiny::actionButton("lang_va", "VAL")
   ),
+  
+  # Botón Guía de uso (arriba a la izquierda)
+  shiny::absolutePanel(
+    top = 10, left = 10, fixed = TRUE,
+    shiny::uiOutput("userguide_btn_ui")
+  ),
 
   # Título + explicación (estilo plantilla)
   shiny::tags$div(
@@ -1085,6 +1091,22 @@ server <- function(input, output, session) {
   # Estado de idioma (por defecto ES)
   lang <- shiny::reactiveVal("es")
 
+output$userguide_btn_ui <- shiny::renderUI({
+  pdf_file <- switch(
+    lang(),
+    es = "GuiaMG_PIME_es.pdf",
+    en = "GuiaMG_PIME_en.pdf",
+    va = "GuiaMG_PIME_val.pdf",
+    "GuiaMG_PIME_es.pdf"
+  )
+  
+  shiny::tags$a(
+    href = pdf_file,
+    target = "_blank",
+    class = "btn btn-outline-secondary btn-sm",
+    texts[[lang()]][["userguide"]] %||% "Guía de uso"
+  )
+})
 
 # Re-render MathJax when language changes (supports MathJax v2 and v3)
 observeEvent(lang(), {
@@ -1100,6 +1122,7 @@ observeEvent(lang(), {
       desc  = "Aplicación docente para resolver problemas de Programación Lineal con dos variables mediante el método gráfico, analizando restricciones, región factible y función objetivo.",
       credits = "STATIO es un Proyecto de Innovación y Mejora Educativa (PIME/25-26/562) desarrollado por el DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.",
       solutions_title = "Espacio de Soluciones",
+      userguide= "Guía de Uso",
       lbl_restricciones = "Restricciones",
       lbl_funcion_objetivo = "Función objetivo",
       lbl_naturaleza_vars  = "Naturaleza de las variables",
@@ -1120,6 +1143,7 @@ observeEvent(lang(), {
       desc  = "Teaching app to solve two-variable Linear Programming problems using the graphical method, analyzing constraints, feasible region and objective function.",
       credits = "STATIO is an Educational Innovation and Improvement Project (PIME/25-26/562) developed by DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.",
       solutions_title = "Solution Space",
+      userguide= "User Guide",
       lbl_restricciones = "Constraints",
       lbl_funcion_objetivo = "Objective function",
       lbl_naturaleza_vars  = "Variable nature",
@@ -1140,6 +1164,7 @@ observeEvent(lang(), {
       desc  = "Aplicació docent per a resoldre problemes de Programació Lineal amb dues variables mitjançant el mètode gràfic, analitzant restriccions, regió factible i funció objectiu.",
       credits = "STATIO és un Projecte d’Innovació i Millora Educativa (PIME/25-26/562) desenvolupat pel DEIOAC-<a href='https://upv.es' target='_blank'>UPV</a>.",
       solutions_title = "Espai de Solucions",
+      userguide= "Guia d'ús",
       lbl_restricciones = "Restriccions",
       lbl_funcion_objetivo = "Funció objectiu",
       lbl_naturaleza_vars  = "Naturalesa de les variables",

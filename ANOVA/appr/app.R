@@ -448,8 +448,12 @@ ui <- fluidPage(
   # CSS base de la plantilla
   tags$head(
     tags$style(HTML("
+        :root{
+          --sidebar-w: clamp(280px, 24vw, 420px);
+        }
+
         #sidebarWrapper {
-          width: 300px;
+          width: var(--sidebar-w);
           background: #f7f7f7;
           padding: 15px;
           border-right: 1px solid #ddd;
@@ -462,11 +466,55 @@ ui <- fluidPage(
           z-index: 2000;
           transform: translateX(-100%);
         }
-        #sidebarWrapper:not(.closed) { transform: translateX(0); }
-        #contentWrapper { transition: margin-left .3s ease; margin-left: 0px; }
-        #contentWrapper.shifted { margin-left: 300px; }
-        #toggleSidebar { position: fixed; top: 10px; left: 10px; z-index: 3000; }
-    "))
+
+        #sidebarWrapper:not(.closed) {
+          transform: translateX(0);
+        }
+
+        #contentWrapper {
+          transition: margin-left .3s ease;
+          margin-left: 0px;
+        }
+
+        #contentWrapper.shifted {
+          margin-left: var(--sidebar-w);
+        }
+
+        #toggleSidebar {
+          position: fixed;
+          top: 10px;
+          left: 10px;
+          z-index: 3000;
+        }
+        
+        /* Hace que todo dentro del sidebar use todo el ancho disponible */
+        
+        #sidebarWrapper .shiny-input-container {
+          width: 100% !important;
+        }
+        
+        #sidebarWrapper .form-control {
+          width: 100% !important;
+        }
+        
+        #sidebarWrapper .selectize-control {
+          width: 100% !important;
+        }
+        
+        #sidebarWrapper .irs {
+          width: 100% !important;
+        }
+        
+        /* títulos */
+        #sidebarWrapper h4 {
+          width: 100%;
+        }
+        
+        /* mejora el espaciado vertical */
+        #sidebarWrapper .shiny-input-container {
+          margin-bottom: 15px;
+        }
+  "))
   ),
   
   tags$head(

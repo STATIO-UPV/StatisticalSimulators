@@ -45,6 +45,11 @@ texts <- list(
     EN = "Parameters", 
     VAL = "Paràmetres" 
   ), 
+  userguide_btn = c(
+    ES = "Guía de uso",
+    EN = "User guide",
+    VAL = "Guia d’ús"
+  ),
   dropdown_label = c( 
     ES = "Título del menú desplegable", 
     EN = "Title of drop-down menu", 
@@ -201,8 +206,12 @@ ui <- fluidPage(
   
   tags$head(
     tags$style(HTML("
+        :root{
+          --sidebar-w: clamp(280px, 24vw, 420px);
+        }
+
         #sidebarWrapper {
-          width: 300px;
+          width: var(--sidebar-w);
           background: #f7f7f7;
           padding: 15px;
           border-right: 1px solid #ddd;
@@ -213,30 +222,54 @@ ui <- fluidPage(
           overflow-y: auto;
           transition: transform .3s ease;
           z-index: 2000;
-          transform: translateX(-100%); /* oculto al inicio */
+          transform: translateX(-100%);
         }
-        
+
         #sidebarWrapper:not(.closed) {
-          transform: translateX(0); /* visible */
+          transform: translateX(0);
         }
-        
+
         #contentWrapper {
           transition: margin-left .3s ease;
           margin-left: 0px;
         }
-        
+
         #contentWrapper.shifted {
-          margin-left: 300px;
+          margin-left: var(--sidebar-w);
+        }
+
+        #toggleSidebar {
+  position: static !important;
+}
+        
+        /* Hace que todo dentro del sidebar use todo el ancho disponible */
+        
+        #sidebarWrapper .shiny-input-container {
+          width: 100% !important;
         }
         
-        #toggleSidebar {
-          position: fixed;
-          top: 10px;
-          left: 10px;
-          z-index: 3000; /* siempre por encima */
-              }"
-    )
-    )
+        #sidebarWrapper .form-control {
+          width: 100% !important;
+        }
+        
+        #sidebarWrapper .selectize-control {
+          width: 100% !important;
+        }
+        
+        #sidebarWrapper .irs {
+          width: 100% !important;
+        }
+        
+        /* títulos */
+        #sidebarWrapper h4 {
+          width: 100%;
+        }
+        
+        /* mejora el espaciado vertical */
+        #sidebarWrapper .shiny-input-container {
+          margin-bottom: 15px;
+        }
+  "))
   ),
   
   tags$style(HTML("
@@ -300,7 +333,14 @@ ui <- fluidPage(
   # Botón que abre/cierra el panel lateral. No MODIFICAR.
   
   if(showparams) {
-    actionButton("toggleSidebar", textOutput("button_parameters"))
+    div(
+      id = "topLeftButtons",
+      style = "position:fixed; top:10px; left:10px; z-index:3000; display:flex; gap:10px;",
+      
+      actionButton("toggleSidebar", textOutput("button_parameters")),
+      
+      uiOutput("userguide_ui")
+    )
   },
   
   
@@ -332,7 +372,6 @@ ui <- fluidPage(
   div(id="contentWrapper", class = "shifted",
       
       # Título y explicación. NO MODIFICAR aquí, solo en el diccionario. 
-      
       div(style="padding-top:50px; margin-bottom:30px",
           h2(textOutput("title"), align="center"),
           div(style="display:flex; justify-content:center;",
@@ -398,6 +437,7 @@ ui <- fluidPage(
 ############################ SERVER #######################################
 
 server <- function(input, output, session) {
+
   
   # ---------------- Manejo del panel lateral. NO MODIFICAR. --------------------
   observeEvent(input$toggleSidebar, {
@@ -411,6 +451,26 @@ server <- function(input, output, session) {
   observeEvent(input$lang_es, { language("ES") }) 
   observeEvent(input$lang_en, { language("EN") }) 
   observeEvent(input$lang_va, { language("VAL") })
+  
+  output$userguide_ui <- renderUI({
+    
+    lang <- language()
+    
+    pdf_file <- switch(
+      lang,
+      ES  = "GuiaREG_PIME_es.pdf",
+      EN  = "GuiaREG_PIME_en.pdf",
+      VAL = "GuiaREG_PIME_val.pdf",
+      "GuiaREG_PIME_es.pdf"
+    )
+    
+    tags$a(
+      href = pdf_file,
+      target = "_blank",
+      class = "btn btn-outline-secondary btn-sm",
+      tr("userguide_btn", lang)
+    )
+  })
   
   # -------- TEXTOS TRADUCIBLES. SE PUEDEN AÑADIR/ELIMINAR SI HACEN FALTA. ----
   
