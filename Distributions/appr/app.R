@@ -349,9 +349,9 @@ ui <- fluidPage(
 
       #First row
       fixedRow(
-        column(4, plotOutput("binomplot")),
-        column(4, plotOutput("negbinomplot")),
-        column(4, plotOutput("poisplot")
+        column(4, plotlyOutput("binomplot")),
+        column(4, plotlyOutput("negbinomplot")),
+        column(4, plotlyOutput("poisplot")
         )),
       #Second row
       fixedRow(
@@ -398,13 +398,13 @@ ui <- fluidPage(
       #Fifth row
       fixedRow(
         column(width=4,
-               plotOutput("hyperplot")
+               plotlyOutput("hyperplot")
         ),
         column(width=4,
-               plotOutput("gausplot")
+               plotlyOutput("gausplot")
         ),
         column(width=4,
-               plotOutput("expplot")
+               plotlyOutput("expplot")
         )
       ),
       #Sixth row
@@ -553,14 +553,13 @@ server <- function(input, output, session) {
 
   # ---------------- PARÁMETROS DINÁMICOS. SE PUEDEN AÑADIR/ELIMINAR SI HACEN FALTA. ----------------
 
-  output$binomplot <- renderPlot({
+  output$binomplot <- renderPlotly({
     req(tick(session))
     minx <- input$minbinom %||% 0
     maxx <- input$maxbinom %||% 20
     n    <- input$nbinom   %||% 20
     p    <- input$pbinom   %||% 0.5
     
-    # checkbox: NULL -> FALSE, FALSE se respeta
     fd <- isTRUE(input$fdistr)
     
     x <- seq(minx, maxx)
@@ -568,15 +567,18 @@ server <- function(input, output, session) {
     
     df <- signif(data.frame(x, y), 3)
     
-    ggplot(df, aes(x = x, y = y)) +
-      geom_point() +
-      ggtitle(tr("binomial", language())) +
-      xlab("X") +
-      ylab(ifelse(fd, "P(X≤x)", "P(X=x)"))
-    
+    plot_ly(
+      df, x = ~x, y = ~y, type = "scatter", mode = "markers",
+      hovertemplate = "X=%{x}<br>Y=%{y}<extra></extra>"
+    ) %>%
+      layout(
+        title = tr("binomial", language()),
+        xaxis = list(title = "X"),
+        yaxis = list(title = ifelse(fd, "P(X≤x)", "P(X=x)"))
+      )
   })
 
-  output$negbinomplot <- renderPlot({
+  output$negbinomplot <- renderPlotly({
     req(tick(session))
     minx <- input$mingeom   %||% 0
     maxx <- input$maxgeom   %||% 20
@@ -589,38 +591,41 @@ server <- function(input, output, session) {
     
     df <- signif(data.frame(x, y), 3)
     
-    
-    ggplot(df, aes(x = x, y = y)) +
-      geom_point() +
-      ggtitle(tr("binomial_neg", language())) +
-      xlab("X") +
-      ylab(ifelse(fd, "P(X\u2264x)", "P(X=x)"))
-    
+    plot_ly(
+      df, x = ~x, y = ~y, type = "scatter", mode = "markers",
+      hovertemplate = "X=%{x}<br>Y=%{y}<extra></extra>"
+    ) %>%
+      layout(
+        title = tr("binomial_neg", language()),
+        xaxis = list(title = "X"),
+        yaxis = list(title = ifelse(fd, "P(X≤x)", "P(X=x)"))
+      )
   })
 
-  output$poisplot <- renderPlot({
+  output$poisplot <- renderPlotly({
     req(tick(session))
     minx <- input$minpois    %||% 0
     maxx <- input$maxpois    %||% 20
     lam  <- input$lambdapois %||% 5
     fd   <- isTRUE(input$fdistr)
-  
     
     x <- seq(minx, maxx)
     y <- if (fd) ppois(x, lam) else dpois(x, lam)
     
     df <- signif(data.frame(x, y), 3)
     
-  
-    ggplot(df, aes(x = x, y = y)) +
-      geom_point() +
-      ggtitle(tr("poisson", language())) +
-      xlab("X") +
-      ylab(ifelse(fd, "P(X\u2264x)", "P(X=x)"))
-    
+    plot_ly(
+      df, x = ~x, y = ~y, type = "scatter", mode = "markers",
+      hovertemplate = "X=%{x}<br>Y=%{y}<extra></extra>"
+    ) %>%
+      layout(
+        title = tr("poisson", language()),
+        xaxis = list(title = "X"),
+        yaxis = list(title = ifelse(fd, "P(X≤x)", "P(X=x)"))
+      )
   })
 
-  output$hyperplot <- renderPlot({
+  output$hyperplot <- renderPlotly({
     req(tick(session))
     minx <- input$minhyper %||% 0
     maxx <- input$maxhyper %||% 20
@@ -629,29 +634,29 @@ server <- function(input, output, session) {
     p    <- input$phyper   %||% 0.5
     fd   <- isTRUE(input$fdistr)
     
-    
-    # phyper/dhyper esperan enteros. Convertimos a enteros razonables:
     N <- as.integer(round(N))
     n <- as.integer(round(n))
-    m <- as.integer(round(N * p))              # "éxitos" en la población
-    m <- max(0L, min(m, N))                    # acotar 0..N
-    n <- max(0L, min(n, N))                    # acotar 0..N
+    m <- as.integer(round(N * p))
+    m <- max(0L, min(m, N))
+    n <- max(0L, min(n, N))
     k <- as.integer(round(minx)):as.integer(round(maxx))
     
     y <- if (fd) phyper(k, m, N - m, n) else dhyper(k, m, N - m, n)
     
     df <- signif(data.frame(x = k, y = y), 3)
     
-  
-    ggplot(df, aes(x = x, y = y)) +
-      geom_point() +
-      ggtitle(tr("hipergeom", language())) +
-      xlab("X") +
-      ylab(ifelse(fd, "P(X\u2264x)", "P(X=x)"))
-  
+    plot_ly(
+      df, x = ~x, y = ~y, type = "scatter", mode = "markers",
+      hovertemplate = "X=%{x}<br>Y=%{y}<extra></extra>"
+    ) %>%
+      layout(
+        title = tr("hipergeom", language()),
+        xaxis = list(title = "X"),
+        yaxis = list(title = ifelse(fd, "P(X≤x)", "P(X=x)"))
+      )
   })
 
-  output$gausplot <- renderPlot({
+  output$gausplot <- renderPlotly({
     req(tick(session))
     minx <- input$mingaus %||% -5
     maxx <- input$maxgaus %||%  5
@@ -666,16 +671,18 @@ server <- function(input, output, session) {
     
     df <- signif(data.frame(x, y), 3)
     
-
-    ggplot(df, aes(x = x, y = y)) +
-      geom_line() +
-      ggtitle(tr("normal", language())) +
-      xlab("X") +
-      ylab(ifelse(fd, "P(X\u2264x)", "f(x)"))
-    
+    plot_ly(
+      df, x = ~x, y = ~y, type = "scatter", mode = "lines",
+      hovertemplate = "X=%{x}<br>Y=%{y}<extra></extra>"
+    ) %>%
+      layout(
+        title = tr("normal", language()),
+        xaxis = list(title = "X"),
+        yaxis = list(title = ifelse(fd, "P(X≤x)", "f(x)"))
+      )
   })
 
-  output$expplot <- renderPlot({
+  output$expplot <- renderPlotly({
     req(tick(session))
     minx <- input$minexp  %||% 0
     maxx <- input$maxexp  %||% 20
@@ -689,12 +696,15 @@ server <- function(input, output, session) {
     
     df <- signif(data.frame(x, y), 3)
     
-    ggplot(df, aes(x = x, y = y)) +
-      geom_line() +
-      ggtitle(tr("exponencial", language())) +
-      xlab("X") +
-      ylab(ifelse(fd, "P(X\u2264x)", "f(x)"))
-    
+    plot_ly(
+      df, x = ~x, y = ~y, type = "scatter", mode = "lines",
+      hovertemplate = "X=%{x}<br>Y=%{y}<extra></extra>"
+    ) %>%
+      layout(
+        title = tr("exponencial", language()),
+        xaxis = list(title = "X"),
+        yaxis = list(title = ifelse(fd, "P(X≤x)", "f(x)"))
+      )
   })
   
 }
