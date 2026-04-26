@@ -23,9 +23,9 @@ texts <- list(
     VAL = "ANOVA unifactorial"
   ),
   explanation = c(
-    ES  = "ANOVA es una técnica estadística utilizada para comparar las medias de tres o más grupos con el objetivo de determinar si existen diferencias significativas entre ellos. Este método analiza la variabilidad total de los datos, separándola en variabilidad entre grupos y dentro de los grupos, para evaluar si las diferencias observadas se deben al azar o a un efecto real del factor estudiado.",
-    EN  = "ANOVA is a statistical technique used to compare the means of three or more groups in order to determine whether there are significant differences between them. This method analyses the total variability of the data, separating it into variability between groups and within groups, to assess whether the differences observed are due to chance or to a real effect of the factor under study.",
-    VAL = "ANOVA és una tècnica estadística utilitzada per a comparar les mitjanes de tres o més grups amb l'objectiu de determinar si existixen diferències significatives entre ells. Este mètode analitza la variabilitat total de les dades, separant-la en variabilitat entre grups i dins dels grups, per a avaluar si les diferències observades es deuen a l'atzar o a un efecte real del factor estudiat."
+    ES  = "El ANOVA (análisis de la varianza) es una técnica estadística que se utiliza para comprobar si las medias poblacionales de tres o más grupos pueden considerarse iguales o si, por el contrario, al menos una de ellas es distinta. <br>Matemáticamente, contrasta la hipótesis nula: H₀: μ₁ = μ₂ = ··· = μₖ.<br> Para hacerlo, divide la variabilidad total de los datos en dos partes: la variabilidad entre grupos, asociada al factor que queremos estudiar, y la variabilidad dentro de los grupos, debida a diferencias individuales o al azar. Si la variabilidad entre grupos es suficientemente mayor que la variabilidad interna, concluimos que las diferencias observadas no se explican solo por el azar, sino que probablemente existe un efecto real del factor. ",
+    EN  = "ANOVA (analysis of variance) is a statistical technique used to test whether the population means of three or more groups can be considered equal or whether, on the contrary, at least one of them is different. <br>Mathematically, it tests the null hypothesis H₀: μ₁ = μ₂ = ··· = μₖ<br> To do this, it divides the total variability of the data into two parts: the variability between groups, associated with the factor we wish to study, and the variability within groups, due to individual differences or chance. If the variability between groups is sufficiently greater than the internal variability, we conclude that the observed differences cannot be explained by chance alone, but that there is likely a real effect of the factor.",
+    VAL = "El *ANOVA (anàlisi de la variància) és una tècnica estadística que s'utilitza per a comprovar si les mitjanes poblacionals de tres o més grups poden considerar-se iguals o si, per contra, almenys una d'elles és distinta.<br> Matemàticament, contrasta la hipòtesi nul·la H₀: *μ₁ = *μ₂ = ··· = *μₖ<br> Per a fer-ho, dividix la variabilitat total de les dades en dos parts: la variabilitat entre grups, associada al factor que volem estudiar, i la variabilitat dins dels grups, deguda a diferències individuals o a l'atzar. Si la variabilitat entre grups és suficientment major que la variabilitat interna, concloem que les diferències observades no s'expliquen només per l'atzar, sinó que probablement existix un efecte real del factor."
     ),
   
   # Botón sidebar
@@ -34,7 +34,16 @@ texts <- list(
     EN = "Parameters",
     VAL = "Paràmetres"
   ),
-  
+  userguide_btn = c(
+    ES = "Guía de uso",
+    EN = "User guide",
+    VAL = "Guia d’ús"
+  ),
+  exercises = c(
+    ES= "Ejercicios", 
+    EN= "Exercises", 
+    VAL= "Exercicis"
+  ),
   optType = c(
     ES = "Tipo de problema",
     EN = "Problem type",
@@ -90,9 +99,9 @@ texts <- list(
   ),
   res_dist = c(ES="Distribución de los residuos al cuadrado:", EN="Squared residuals distribution:", VAL="Distribució dels residus al quadrat:"),
   res_anova_explain = c(
-    ES="Para analizar la homocedasticidad realizamos un ANOVA de los residuos al cuadrado:",
-    EN="To assess homoscedasticity we run an ANOVA on squared residuals:",
-    VAL="Per a analitzar l'homocedasticitat fem un ANOVA dels residus al quadrat:"
+    ES="Para comprobar si los grupos tienen varianzas similares, analizamos los residuos al cuadrado mediante un ANOVA. La hipótesis nula es que todas las varianzas poblacionales son iguales (H0), frente a la alternativa de que al menos una varianza es distinta (H1).",
+    EN="To check whether the groups have similar variances, we analyse the squared residuals using an ANOVA. The null hypothesis is that all population variances are equal (H0), as opposed to the alternative hypothesis that at least one variance is different (H1).",
+    VAL="Per a comprovar si els grups tenen variàncies similars, analitzem els residus al quadrat mitjançant un *ANOVA. La hipòtesi nul·la és que totes les variàncies poblacionals són iguals (H0), enfront de l'alternativa que almenys una variància és distinta (H1)."
   ),
   
   # Plot labels + títulos
@@ -114,14 +123,14 @@ texts <- list(
   
   # Textos explicativos condiciones
   independence_text = c(
-    ES  = "Este plot no debería tener tendencia si el muestreo es aleatorio simple (condición de independencia).",
-    EN  = "This plot should not show trends if simple random sampling was used (independence assumption).",
-    VAL = "Este gràfic no hauria de tindre tendències si el mostreig és aleatori simple (condició d'independència)."
+    ES  = "En este gráfico no debería apreciarse ninguna pauta ni tendencia claras si los datos proceden de un muestreo aleatorio simple. Si los puntos se distribuyen sin un patrón definido, la condición de independencia puede considerarse razonable.",
+    EN  = "This graph should not show any clear pattern or trend if the data comes from a simple random sample. If the data points are distributed without a defined pattern, the assumption of independence can be considered reasonable.",
+    VAL = "En este gràfic no hauria d'apreciar-se cap pauta ni tendència clares si les dades procedixen d'un mostreig aleatori simple. Si els punts es distribuïxen sense un patró definit, la condició d'independència pot considerar-se raonable."
   ),
   normality_text = c(
-    ES  = "Para analizar la normalidad utilizamos el papel probabilistico normal. Si todos los valores forman una recta, la distribución de nuestros datos seguirán una distribución normal. Para ello nos fijamos si están dentro del intervalo de confianza marcado con la zona azul. En caso de tener valores fuera, no podemos asegurar la condición de normalidad.",
-    EN  = "To analyse normality, we use the normal probability paper. If all values form a straight line, the distribution of our data will follow a normal distribution. To do this, we check whether they are within the confidence interval marked with the blue area. If there are values outside this area, we cannot guarantee normality.",
-    VAL = "Per a analitzar la normalitat utilitzem el paper *probabilistico normal. Si tots els valors formen una recta, la distribució de les nostres dades seguiran una distribució normal. Per a això ens fixem si estan dins de l'interval de confiança marcat amb la zona blava. En cas de tindre valors fora, no podem assegurar la condició de normalitat."
+    ES  = "Para evaluar la normalidad utilizamos un gráfico Q-Q (quantile-quantile plot). Si los datos siguen aproximadamente una distribución normal, los puntos se situarán cerca de la recta de referencia y, de forma orientativa, dentro de la banda de confianza. Si se observan desviaciones claras respecto a esa recta o varios puntos fuera de la banda, la hipótesis de normalidad resulta menos razonable.",
+    EN  = "To assess normality, we use a Q-Q plot (quantile-quantile plot). If the data follow a roughly normal distribution, the points will lie close to the reference line and, as a general rule, within the confidence band. If there are clear deviations from this line or several points lie outside the band, the assumption of normality becomes less plausible.",
+    VAL = "Per a avaluar la normalitat utilitzem un gràfic Q-Q (*quantile-*quantile *plot). Si les dades seguixen aproximadament una distribució normal, els punts se situaran prop de la recta de referència i, de manera orientativa, dins de la banda de confiança. Si s'observen desviacions clares respecte a eixa recta o diversos punts fora de la banda, la hipòtesi de normalitat resulta menys raonable."
   ),
   
   # ANOVA / F-test blocks (Panel 2)
@@ -145,7 +154,7 @@ texts <- list(
   ), 
   f_statistic_title = c(ES="Calculamos el estadístico:", EN="We compute the statistic:", VAL="Calculem l'estadístic:"),
   # =========================
-  # F plot (títulos/ejes/leyenda) ✅ (nuevo)
+  # F plot (títulos/ejes/leyenda) 
   # =========================
   f_plot_main = c(
     ES  = "Distribución F",
@@ -203,7 +212,7 @@ texts <- list(
   f_plot_title = c(ES="Mostramos las regiones, el estadístico y el p-valor:", EN="We show the regions, the statistic and the p-value:", VAL="Vam mostrar les regions, l'estadístic i el p-valor:"),
   f_conclusion_title = c(ES="Conclusión:", EN="Conclusion:", VAL="Conclusió:"),
   
-  # Distribution text (Panel 2) (placeholders)
+  # Distribution text (Panel 2) 
   distribution_text = c(
     ES = "Vamos a trabajar con la distribución F de Snedecor con {df1} grados de libertad en el numerador y con {df2} grados de libertad en el denominador.",
     EN = "We will work with Snedecor's F distribution with {df1} degrees of freedom in the numerator and {df2} degrees of freedom in the denominator.",
@@ -212,17 +221,27 @@ texts <- list(
   
   # ANOVA conclusion (Panel 1) based on p-value
   anova_concl_sig = c(
-    ES  = "El análisis ANOVA muestra que hay una diferencia estadísticamente significativa entre los grupos (p < 0.05).\nPor lo tanto, hay al menos un par de medias diferentes (H1).",
-    EN  = "ANOVA indicates a statistically significant difference between groups (p < 0.05). Therefore, at least one pair of means differs (H1).",
-    VAL = "L'ANOVA mostra diferències estadísticament significatives entre grups (p < 0.05). Per tant, almenys un parell de mitjanes és diferent (H1)."
+    ES  = "El ANOVA indica que existen diferencias estadísticamente significativas entre las medias de los grupos (p < 0,05). Por tanto, se rechaza la hipótesis nula de igualdad de medias y se concluye que al menos una media poblacional difiere de las demás.
+    <br>ANOVA no identifica directamente qué grupos concretos son distintos entre sí; solo indica que no todas las medias son iguales. Para saber entre qué grupos se originan esas diferencias, habría que realizar múltiples comparaciones o pruebas post hoc.",
+    EN  = "The ANOVA indicates that there are statistically significant differences between the group means (p < 0.05). Therefore, the null hypothesis of equal means is rejected, and it is concluded that at least one population mean differs from the others. 
+    <br>ANOVA does not directly identify which specific groups differ from one another; it merely indicates that not all means are equal. To determine which groups account for these differences, multiple comparisons or post hoc tests would need to be carried out. ",
+    VAL = "El *ANOVA indica que existixen diferències estadísticament significatives entre les mitjanes dels grups (p < 0,05). Per tant, es rebutja la hipòtesi nul·la d'igualtat de mitjanes i es conclou que almenys una mitjana poblacional diferix de les altres. 
+    <br>*ANOVA no identifica directament quins grups concrets són distints entre si; només indica que no totes les mitjanes són iguals. Per a saber entre quins grups s'originen eixes diferències, caldria realitzar múltiples comparacions o proves post *hoc. "
   ),
+  
   anova_concl_nsig = c(
     ES  = "El análisis ANOVA no muestra una diferencia estadísticamente significativa entre los grupos (p ≥ 0.05).\nPor lo tanto, no se puede afirmar que las medias son diferentes (H0).",
     EN  = "ANOVA does not show a statistically significant difference between groups (p ≥ 0.05). Therefore, we cannot claim the means differ (H0).",
     VAL = "L'ANOVA no mostra diferències estadísticament significatives entre grups (p ≥ 0.05). Per tant, no podem afirmar que les mitjanes són diferents (H0)."
   ),
   
-  # F-test conclusion (Panel 2) based on Fcalc vs Fcrit (texto largo)
+  lsd_mean_explanation = c(
+    ES = "El análisis post-hoc LSD compara diferencias entre medias. Si dos intervalos LSD se solapan, no se observan diferencias estadísticamente significativas entre esas medias. Si no se solapan, sí existen diferencias significativas entre las medias.",
+    EN = "The LSD post-hoc analysis compares differences between means. If two LSD intervals overlap, no statistically significant differences are observed between those means. If they do not overlap, there are significant differences between the means.",
+    VAL = "L'anàlisi post-hoc LSD compara diferències entre mitjanes. Si dos intervals LSD se solapen, no s'observen diferències estadísticament significatives entre eixes mitjanes. Si no se solapen, sí que existixen diferències significatives entre les mitjanes."
+  ),
+  
+  # F-test conclusion (Panel 2) based on Fcalc vs Fcrit 
   f_concl_reject = c(
     ES  = "Dado que el estadístico cae en la región de rechazo (p-valor < 0.05), rechazamos la hipótesis nula (H0). Hay diferencias significativas entre las medias de los grupos.",
     EN  = "Since the statistic falls in the rejection region (p-value < 0.05), we reject the null hypothesis (H0). There are significant differences between the group means.",
@@ -246,19 +265,19 @@ texts <- list(
     VAL = "$$H_1: \\text{Almenys un parell de variàncies és diferent}$$"
   ),
   
-  # Conclusión ANOVA residuos^2 (homocedasticidad) (también al diccionario)
+  # Conclusión ANOVA residuos^2 (homocedasticidad) 
   res_concl_sig = c(
-    ES  = "El análisis ANOVA muestra que hay una diferencia estadísticamente significativa entre los grupos (p < 0.05).\nPor lo tanto, las distribuciones son heterocedásticas ya que hay al menos un par de varianzas diferentes (H1).",
-    EN  = "ANOVA on squared residuals shows a statistically significant difference between groups (p < 0.05). Therefore, the distributions are heteroscedastic: at least one pair of variances differs (H1).",
-    VAL = "L'ANOVA dels residus al quadrat mostra diferències estadísticament significatives entre grups (p < 0.05). Per tant, les distribucions són heterocedàstiques: almenys un parell de variàncies és diferent (H1)."
+    ES  = "El análisis ANOVA muestra que hay una diferencia estadísticamente significativa entre los grupos (p < 0.05). Por tanto, hay evidencia de diferencias significativas entre las varianzas de los grupos, de modo que la condición de homocedasticidad no puede considerarse razonable. ",
+    EN  = "ANOVA on squared residuals shows a statistically significant difference between groups (p < 0.05). There is therefore no evidence of significant differences between the variances of the groups, so the assumption of homoscedasticity can not be considered reasonable.",
+    VAL = "L'ANOVA dels residus al quadrat mostra diferències estadísticament significatives entre grups (p < 0.05). Per tant, no hi ha evidència de diferències significatives entre les variàncies dels grups, de manera que la condició de *homocedasticidad no pot considerar-se raonable."
   ),
   res_concl_nsig = c(
-    ES  = "El análisis ANOVA no muestra una diferencia estadísticamente significativa entre los grupos (p ≥ 0.05).\nPor lo tanto, las distribuciones son homocedásticas ya que no se puede afirmar que las varianzas son diferentes (H0).",
-    EN  = "ANOVA on squared residuals does not show a statistically significant difference between groups (p ≥ 0.05). Therefore, the distributions are homoscedastic: we cannot claim variances differ (H0).",
-    VAL = "L'ANOVA dels residus al quadrat no mostra diferències estadísticament significatives entre grups (p ≥ 0.05). Per tant, les distribucions són homocedàstiques: no podem afirmar que les variàncies són diferents (H0)."
+    ES  = "El análisis ANOVA no muestra una diferencia estadísticamente significativa entre los grupos (p ≥ 0.05). Por tanto, no hay evidencia de diferencias significativas entre las varianzas de los grupos, de modo que la condición de homocedasticidad puede considerarse razonable.",
+    EN  = "ANOVA on squared residuals does not show a statistically significant difference between groups (p ≥ 0.05). There is therefore no evidence of significant differences between the variances of the groups, so the assumption of homoscedasticity can be considered reasonable.",
+    VAL = "L'ANOVA dels residus al quadrat no mostra diferències estadísticament significatives entre grups (p ≥ 0.05). Per tant, no hi ha evidència de diferències significatives entre les variàncies dels grups, de manera que la condició de *homocedasticidad pot considerar-se raonable."
   ),
   
-  # Comparisons (post-hoc text)  (NO TOCAR si lo usas)
+  # Comparisons (post-hoc text)
   # =========================
   comparison_prefix = c(ES="Comparación", EN="Comparison", VAL="Comparació"),
   vs_text = c(ES="vs", EN="vs", VAL="vs"),
@@ -289,38 +308,7 @@ texts <- list(
   ),
   
   # =========================
-  # COO (Resumen)  ✅ (nuevo, sin hardcode)
-  # =========================
-  no_coo_short = c(
-    ES  = "No hay diferencias significativas entre las condiciones según el ANOVA.",
-    EN  = "No significant differences between conditions according to ANOVA.",
-    VAL = "No hi ha diferències significatives entre les condicions segons l'ANOVA."
-  ),
-  
-  best_lsd_single_summary = c(
-    ES  = "La mejor condición operativa es el grupo {pick}.",
-    EN  = "The best operating condition is group {pick}.",
-    VAL = "La millor condició operativa és el grup {pick}."
-  ),
-  best_lsd_multi_summary = c(
-    ES  = "La mejor condición operativa puede ser cualquiera de: {cand_groups} (según LSD; no difieren significativamente de la mejor).",
-    EN  = "The best operating condition can be any of: {cand_groups} (according to LSD; they do not differ significantly from the best).",
-    VAL = "La millor condició operativa pot ser qualsevol de: {cand_groups} (segons LSD; no difereixen significativament de la millor)."
-  ),
-  
-  best_tukey_single_summary = c(
-    ES  = "La mejor condición operativa es el grupo {pick} (según Tukey HSD).",
-    EN  = "The best operating condition is group {pick} (according to Tukey HSD).",
-    VAL = "La millor condició operativa és el grup {pick} (segons Tukey HSD)."
-  ),
-  best_tukey_multi_summary = c(
-    ES  = "La mejor condición operativa puede ser cualquiera de: {cand_groups} (según Tukey HSD; no difieren significativamente de la mejor).",
-    EN  = "The best operating condition can be any of: {cand_groups} (according to Tukey HSD; they do not differ significantly from the best).",
-    VAL = "La millor condició operativa pot ser qualsevol de: {cand_groups} (segons Tukey HSD; no difereixen significativament de la millor)."
-  ),
-  
-  # =========================
-  # COO (Pestaña COO) ✅ (EXACTOS)
+  # COO (Pestaña COO)
   # =========================
   no_coo_full = c(
     ES  = "No hay COO, ya que no hay diferencias significativas entre los grupos según el ANOVA.",
@@ -342,19 +330,16 @@ texts <- list(
   
   best_lsd_multi = c(
     ES  = paste0(
-      "La mejor condición operativa puede ser cualquiera de: {cand_desc} ",
-      "(según LSD; no difieren significativamente de la mejor). ",
-      "Si necesitas elegir una sola por criterio operativo, se suele reportar la de mejor media: {pick} ({pick_mean})."
+      "La mejor condición operativa puede ser cualquiera de: {cand_desc} ya que, según el procedimiento LSD, sus medias no difieren significativamente entre sí. 
+       Si necesitas elegir una sola por criterio operativo, se suele reportar la de mejor media: {pick} ({pick_mean})."
     ),
     EN  = paste0(
-      "The best operating condition can be any of: {cand_desc} ",
-      "(according to LSD; they do not differ significantly from the best). ",
-      "If you need to choose just one for operational reasons, it is common to report the one with the best mean: {pick} ({pick_mean})."
+      "The best operating condition can be any of: {cand_desc} since, according to the LSD procedure, their means do not differ significantly from one another.
+       If you need to choose just one for operational reasons, it is common to report the one with the best mean: {pick} ({pick_mean})."
     ),
     VAL = paste0(
-      "La millor condició operativa pot ser qualsevol de: {cand_desc} ",
-      "(segons LSD; no difereixen significativament de la millor). ",
-      "Si necessites triar-ne només una per criteri operatiu, se sol reportar la de millor mitjana: {pick} ({pick_mean})."
+      "La millor condició operativa pot ser qualsevol de: {cand_desc} ja que, segons el procediment LSD, les seues mitjanes no diferixen significativament entre si.
+       Si necessites triar-ne només una per criteri operatiu, se sol reportar la de millor mitjana: {pick} ({pick_mean})."
     )
   ),
   
@@ -366,26 +351,38 @@ texts <- list(
   
   best_tukey_multi = c(
     ES  = paste0(
-      "La mejor condición operativa puede ser cualquiera de: {cand_desc} ",
-      "(según Tukey HSD; no difieren significativamente de la mejor). ",
-      "Si necesitas elegir una sola por criterio operativo, se suele reportar la de mejor media: {pick} ({pick_mean})."
+      "La mejor condición operativa puede ser cualquiera de: {cand_desc}  a que, según el procedimiento HSD Tukey, sus medias no difieren significativamente entre sí. 
+       Si necesitas elegir una sola por criterio operativo, se suele reportar la de mejor media: {pick} ({pick_mean})."
     ),
     EN  = paste0(
-      "The best operating condition can be any of: {cand_desc} ",
-      "(according to Tukey HSD; they do not differ significantly from the best). ",
-      "If you need to choose just one for operational reasons, it is common to report the one with the best mean: {pick} ({pick_mean})."
+      "The best operating condition can be any of: {cand_desc} since, according to the Tukey HSD procedure, their means do not differ significantly from one another. 
+       If you need to choose just one for operational reasons, it is common to report the one with the best mean: {pick} ({pick_mean})."
     ),
     VAL = paste0(
-      "La millor condició operativa pot ser qualsevol de: {cand_desc} ",
-      "(segons Tukey HSD; no difereixen significativament de la millor). ",
-      "Si necessites triar-ne només una per criteri operatiu, se sol reportar la de millor mitjana: {pick} ({pick_mean})."
+      "La millor condició operativa pot ser qualsevol de: {cand_desc}, ja que, segons el procediment LSD, les seues mitjanes no diferixen significativament entre si. 
+       Si necessites triar-ne només una per criteri operatiu, se sol reportar la de millor mitjana: {pick} ({pick_mean})."
     )
   ),
   
   coo_dev_common_exact = c(
-    ES  = "Todos los grupos tienen la misma desviación. La desviación asociada a la COO es la raiz del cuadrado medio residual del ANOVA de medias: $$\\sigma_{\\text{COO}} = \\sqrt{\\text{CMR}} = \\sqrt{{ms_error}} = {deviation}$$",
-    EN  = "All groups share the same standard deviation. The deviation associated with the OOC is the square root of the residual mean square from ANOVA: $$\\sigma_{\\text{OOC}} = \\sqrt{\\text{MSE}} = \\sqrt{{ms_error}} = {deviation}$$",
-    VAL = "Tots els grups tenen la mateixa desviació. La desviació associada a la COO és l'arrel del quadrat mitjà residual de l'ANOVA: $$\\sigma_{\\text{COO}} = \\sqrt{\\text{CMR}} = \\sqrt{{ms_error}} = {deviation}$$"
+    ES = paste0(
+      "Si consideramos valores individuales en la COO, la desviación típica estimada es:",
+      "$$\\hat\\sigma = \\sqrt{CMR} = \\sqrt{{ms_error}} = {deviation}$$",
+      "<br>Si queremos medir la precisión de la media estimada de la COO, usamos el error estándar:",
+      "$$SE = \\sqrt{\\frac{CMR}{n}} = \\sqrt{\\frac{{ms_error}}{{n_group}}} = {se_mean}$$"
+    ),
+    EN = paste0(
+      "If we consider individual values in the OOC, the estimated standard deviation is:",
+      "$$\\hat\\sigma = \\sqrt{MSE} = \\sqrt{{ms_error}} = {deviation}$$",
+      "<br>If we want to measure the precision of the estimated OOC mean, we use the standard error:",
+      "$$SE = \\sqrt{\\frac{MSE}{n}} = \\sqrt{\\frac{{ms_error}}{{n_group}}} = {se_mean}$$"
+    ),
+    VAL = paste0(
+      "Si considerem valors individuals en la COO, la desviació típica estimada és:",
+      "$$\\hat\\sigma = \\sqrt{CMR} = \\sqrt{{ms_error}} = {deviation}$$",
+      "<br>Si volem mesurar la precisió de la mitjana estimada de la COO, usem l'error estàndard:",
+      "$$SE = \\sqrt{\\frac{CMR}{n}} = \\sqrt{\\frac{{ms_error}}{{n_group}}} = {se_mean}$$"
+    )
   ),
   
   coo_var_corr_exact = c(
@@ -407,14 +404,44 @@ texts <- list(
   ),
   
   coo_dist_common_exact = c(
-    ES  = "La COO sigue una distribución $$N({mean_coo}, {dev_coo})$$",
-    EN  = "The OOC follows a distribution $$N({mean_coo}, {dev_coo})$$",
-    VAL = "La COO segueix una distribució $$N({mean_coo}, {dev_coo})$$"
+    ES = paste0(
+      "Los valores individuales en la COO siguen aproximadamente:",
+      "$$N({mean_coo}, {dev_coo}^2)$$",
+      "<br>La media muestral de la COO sigue aproximadamente:",
+      "$$N({mean_coo}, {se_mean}^2)$$"
+    ),
+    EN = paste0(
+      "Individual values in the OOC approximately follow:",
+      "$$N({mean_coo}, {dev_coo}^2)$$",
+      "<br>The sample mean of the OOC approximately follows:",
+      "$$N({mean_coo}, {se_mean}^2)$$"
+    ),
+    VAL = paste0(
+      "Els valors individuals en la COO seguixen aproximadament:",
+      "$$N({mean_coo}, {dev_coo}^2)$$",
+      "<br>La mitjana mostral de la COO seguix aproximadament:",
+      "$$N({mean_coo}, {se_mean}^2)$$"
+    )
   ),
   coo_dist_common_exact2 = c(
-    ES  = "La COO sigue una distribución: $$N({mean_coo}, {dev_coo})$$",
-    EN  = "The OOC follows a distribution: $$N({mean_coo}, {dev_coo})$$",
-    VAL = "La COO segueix una distribució: $$N({mean_coo}, {dev_coo})$$"
+    ES = paste0(
+      "Los valores individuales en la COO siguen aproximadamente:",
+      "$$N({mean_coo}, {dev_coo}^2)$$",
+      "<br>La media muestral de la COO sigue aproximadamente:",
+      "$$N({mean_coo}, {se_mean}^2)$$"
+    ),
+    EN = paste0(
+      "Individual values in the OOC approximately follow:",
+      "$$N({mean_coo}, {dev_coo}^2)$$",
+      "<br>The sample mean of the OOC approximately follows:",
+      "$$N({mean_coo}, {se_mean}^2)$$"
+    ),
+    VAL = paste0(
+      "Els valors individuals en la COO seguixen aproximadament:",
+      "$$N({mean_coo}, {dev_coo}^2)$$",
+      "<br>La mitjana mostral de la COO seguix aproximadament:",
+      "$$N({mean_coo}, {se_mean}^2)$$"
+    )
   ),
   # Créditos
   credits = c(
@@ -449,7 +476,7 @@ ui <- fluidPage(
   tags$head(
     tags$style(HTML("
         :root{
-          --sidebar-w: clamp(280px, 24vw, 420px);
+          --sidebar-w: clamp(300px, 30vw, 460px);
         }
 
         #sidebarWrapper {
@@ -480,12 +507,8 @@ ui <- fluidPage(
           margin-left: var(--sidebar-w);
         }
 
-        #toggleSidebar {
-          position: fixed;
-          top: 10px;
-          left: 10px;
-          z-index: 3000;
-        }
+        toggleSidebar {
+        position: static !important;}
         
         /* Hace que todo dentro del sidebar use todo el ancho disponible */
         
@@ -524,8 +547,15 @@ ui <- fluidPage(
   ),
   
   if (showparams) {
-    actionButton("toggleSidebar", textOutput("button_parameters"))
-  },
+    div(
+      id = "topLeftButtons",
+      style = "position:fixed; top:10px; left:10px; z-index:3000; display:flex; gap:10px;",
+      
+      actionButton("toggleSidebar", textOutput("button_parameters")),
+      
+      uiOutput("userguide_ui"),
+      uiOutput("exercises_ui")
+    )},
   
   # Sidebar
   div(
@@ -583,12 +613,10 @@ ui <- fluidPage(
         verbatimTextOutput("aov"),
         
         h5(textOutput("interpretation_out")),
-        textOutput("conclusionText"),
+        uiOutput("conclusionText"),
         br(),
         
-        h5(textOutput("posthoc_title_out")),
-        plotOutput("posthocPlot"),
-        textOutput("posthocConclusion"),
+        uiOutput("posthocBlock"),
         br(),
         
         h5(textOutput("coo_title_out")),
@@ -710,6 +738,38 @@ server <- function(input, output) {
   output$lang_en_txt <- renderText({ tr("lang_en", language()) })
   output$lang_va_txt <- renderText({ tr("lang_va", language()) })
   
+  # GUIDE
+  output$userguide_ui <- renderUI({
+    
+    lang <- language()
+    
+    pdf_file <- switch(
+      lang,
+      ES  = "Guia_anova.pdf",
+      EN  = "Guia_anova.pdf",
+      VAL = "Guia_anova.pdf",
+      "Guia_anova.pdf"
+    )
+    
+    tags$a(
+      href = pdf_file,
+      target = "_blank",
+      class = "btn btn-outline-secondary btn-sm",
+      tr("userguide_btn", lang)
+    )
+  })
+  
+  output$exercises_ui <- renderUI({
+    
+    html_file <- "ejercicios_adicionales.html"
+    
+    tags$a(
+      href = html_file,
+      target = "_blank",
+      class = "btn btn-outline-secondary btn-sm",
+      tr("exercises", language())
+    )
+  })
   # Textos UI
   output$title <- renderText({ tr("title", language()) })
   output$explanation <- renderUI({ HTML(tr("explanation", language())) })
@@ -729,7 +789,17 @@ server <- function(input, output) {
   output$f_pvalue_title_out <- renderText({ tr("f_pvalue_title", language()) })
   output$f_plot_title_out <- renderText({ tr("f_plot_title", language()) })
   output$f_conclusion_title_out <- renderText({ tr("f_conclusion_title", language()) })
-  
+  output$posthocBlock <- renderUI({
+    if (p_value() >= 0.05) {
+      return(NULL)
+    }
+    
+    tagList(
+      h5(textOutput("posthoc_title_out")),
+      plotOutput("posthocPlot"),
+      uiOutput("posthocConclusion")
+    )
+  })
   output$dist_data_title <- renderText({ tr("dist_data", language()) })
   output$anova_title_out <- renderText({ tr("anova_title", language()) })
   output$table_title_out <- renderText({ tr("table_title", language()) })
@@ -802,10 +872,23 @@ server <- function(input, output) {
   
   output$violinPlot <- renderPlot({
     ggplot(d(), aes(x = group, y = value, fill = group)) +
-      geom_violin(trim = FALSE) +
-      geom_jitter(width = 0.1, size = 0.5) +
-      labs(x = tr("plot_x", language()), y = tr("plot_y", language())) +
-      theme_minimal()
+      geom_boxplot(
+        width = 0.45,
+        alpha = 0.45,
+        outlier.shape = NA
+      ) +
+      geom_jitter(
+        aes(color = group),
+        width = 0.12,
+        size = 1.8,
+        alpha = 0.45
+      ) +
+      labs(
+        x = tr("plot_x", language()),
+        y = tr("plot_y", language())
+      ) +
+      theme_minimal() +
+      theme(legend.position = "none")
   })
   
   output$sampleStats <- renderUI({
@@ -838,8 +921,12 @@ server <- function(input, output) {
   
   ##################### CONCLUSIÓN ANOVA (Panel 1) ####################
   
-  output$conclusionText <- renderText({
-    if (p_value() < 0.05) tr("anova_concl_sig", language()) else tr("anova_concl_nsig", language())
+  output$conclusionText <- renderUI({
+    if (p_value() < 0.05) {
+      HTML(tr("anova_concl_sig", language()))
+    } else {
+      HTML(tr("anova_concl_nsig", language()))
+    }
   })
   
   ##################### POST-HOC: LSD vs TUKEY ####################
@@ -903,21 +990,43 @@ server <- function(input, output) {
   
   output$posthocPlot <- renderPlot({
     req(input$posthocType)
+    
+    if (p_value() >= 0.05) return(NULL)
+    
     if (input$posthocType == "Intervalos LSD") {
       lsd_data <- lsd_intervals()
+      
       ggplot(lsd_data, aes(x = group, y = mean)) +
         geom_point(size = 3) +
         geom_errorbar(aes(ymin = LCL, ymax = UCL), width = 0.2) +
-        labs(x = tr("plot_x", language()), y = tr("plot_y", language())) +
+        labs(
+          title = tr("posthoc_lsd", language()),
+          x = tr("plot_x", language()),
+          y = tr("plot_y", language())
+        ) +
         theme_minimal()
+      
     } else {
       plot(TukeyHSD(anova_result()))
     }
   })
   
-  output$posthocConclusion <- renderText({
+  output$posthocConclusion <- renderUI({
     req(input$posthocType)
-    if (input$posthocType == "Intervalos LSD") lsd_conclusion3() else tukey_conclusion3()
+    
+    if (p_value() >= 0.05) {
+      return(NULL)
+    }
+    
+    if (input$posthocType == "Intervalos LSD") {
+      HTML(paste0(
+        tr("lsd_mean_explanation", language()),
+        "<br><br>",
+        gsub("\n", "<br>", lsd_conclusion3())
+      ))
+    } else {
+      HTML(gsub("\n", "<br>", tukey_conclusion3()))
+    }
   })
   
   ##################### COO (Resumen) ####################
@@ -1060,11 +1169,25 @@ server <- function(input, output) {
   output$residualsViolinPlot <- renderPlot({
     data <- d()
     data$residuals_squared <- residuals(anova_result())^2
+    
     ggplot(data, aes(x = group, y = residuals_squared, fill = group)) +
-      geom_violin(trim = FALSE) +
-      geom_jitter(width = 0.1, size = 0.5) +
-      labs(x = tr("plot_x", language()), y = tr("residuals2_y", language())) +
-      theme_minimal()
+      geom_boxplot(
+        width = 0.45,
+        alpha = 0.45,
+        outlier.shape = NA
+      ) +
+      geom_jitter(
+        aes(color = group),
+        width = 0.12,
+        size = 1.8,
+        alpha = 0.45
+      ) +
+      labs(
+        x = tr("plot_x", language()),
+        y = tr("residuals2_y", language())
+      ) +
+      theme_minimal() +
+      theme(legend.position = "none")
   })
   
   residuals_data <- reactive({
@@ -1276,9 +1399,13 @@ server <- function(input, output) {
       ms_error <- summary(anova_result())[[1]]["Residuals", "Mean Sq"]
       deviation <- sqrt(ms_error)
       
+      se_mean <- sqrt(ms_error / input$n)
+      
       txt <- fmt(tr("coo_dev_common_exact", language()),
                  ms_error  = round(ms_error, 2),
-                 deviation = round(deviation, 2))
+                 deviation = round(deviation, 2),
+                 n_group   = input$n,
+                 se_mean   = round(se_mean, 2))
       
       return(withMathJax(HTML(txt)))
     }
@@ -1329,9 +1456,12 @@ server <- function(input, output) {
       ms_error <- summary(anova_result())[[1]]["Residuals", "Mean Sq"]
       dev_coo <- round(sqrt(ms_error), 2)
       
+      se_mean <- round(dev_coo / sqrt(input$n), 2)
+      
       txt <- fmt(tr("coo_dist_common_exact", language()),
                  mean_coo = mean_coo,
-                 dev_coo  = dev_coo)
+                 dev_coo  = dev_coo,
+                 se_mean  = se_mean)
       return(withMathJax(HTML(txt)))
     } else {
       data <- d()
@@ -1345,9 +1475,12 @@ server <- function(input, output) {
       var_corr <- mean_res2 * n_total / df_res
       dev_coo <- round(sqrt(var_corr), 2)
       
+      se_mean <- round(dev_coo / sqrt(input$n), 2)
+      
       txt <- fmt(tr("coo_dist_common_exact2", language()),
                  mean_coo = mean_coo,
-                 dev_coo  = dev_coo)
+                 dev_coo  = dev_coo,
+                 se_mean  = se_mean)
       return(withMathJax(HTML(txt)))
     }
   })
