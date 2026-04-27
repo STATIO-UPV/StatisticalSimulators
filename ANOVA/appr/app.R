@@ -548,20 +548,17 @@ ui <- fluidPage(
           flex-wrap: wrap;
           max-width: calc(100vw - 16px);
         }
-      
-        #languageButtons {
-          top: 56px !important;
-          right: 8px !important;
+              #languageButtons {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;           /* 👈 permite saltar de línea */
+          justify-content: flex-end; /* mantiene alineado a la derecha */
+          max-width: 120px;          /* 👈 fuerza que no quepan en una sola fila */
         }
-      
-        #contentWrapper > div:first-child {
-          padding-top: 95px !important;
+        
+        #languageButtons .btn {
+          flex: 0 0 auto;
         }
-      
-        #sidebarWrapper {
-          padding-top: 95px !important;
-        }
-      }
         
         /* mejora el espaciado vertical */
         #sidebarWrapper .shiny-input-container {
