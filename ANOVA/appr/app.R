@@ -466,6 +466,7 @@ ui <- fluidPage(
   useShinyjs(),
   
   absolutePanel(
+    id = "languageButtons",
     top = 10, right = 10, fixed = TRUE,
     actionButton("lang_es", textOutput("lang_es_txt")),
     actionButton("lang_en", textOutput("lang_en_txt")),
@@ -532,6 +533,35 @@ ui <- fluidPage(
         #sidebarWrapper h4 {
           width: 100%;
         }
+        
+        #languageButtons {
+        z-index: 3000;
+        display: flex;
+        gap: 6px;
+      }
+      
+      @media (max-width: 600px) {
+        #topLeftButtons {
+          left: 8px !important;
+          right: 8px !important;
+          top: 8px !important;
+          flex-wrap: wrap;
+          max-width: calc(100vw - 16px);
+        }
+      
+        #languageButtons {
+          top: 56px !important;
+          right: 8px !important;
+        }
+      
+        #contentWrapper > div:first-child {
+          padding-top: 95px !important;
+        }
+      
+        #sidebarWrapper {
+          padding-top: 95px !important;
+        }
+      }
         
         /* mejora el espaciado vertical */
         #sidebarWrapper .shiny-input-container {
