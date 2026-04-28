@@ -82,6 +82,11 @@ texts <- list(
     EN = "Download data",
     VAL = "Descarregar dades"
   ),
+  panel_data = c(
+    ES = "Datos",
+    EN = "Data",
+    VAL = "Dades"
+  ),
   
   # Reutilizamos slider1..6 del template para órdenes SARIMA
   slider1 = c(ES = "p (AR)", EN = "p (AR)", VAL = "p (AR)"),
@@ -343,7 +348,7 @@ ui <- fluidPage(
       #   ),
       
       tabPanel(
-        "Data",
+        textOutput("panel_data_title"),
         br(),
         downloadButton("download_data", textOutput("download_data_text")),
         br(), br(),
@@ -393,6 +398,9 @@ server <- function(input, output, session) {
   output$panel1_title <- renderText(tr("panel1", language()))
   output$panel2_title <- renderText(tr("panel2", language()))
   output$panel3_title <- renderText(tr("panel3", language()))
+  output$panel_data_title <- renderText(
+    tr("panel_data", language())
+  )
   output$button_parameters <- renderText(tr("button_parameters", language()))
   output$button_advanced <- renderText(tr("button_advanced", language()))
   output$text_downmenu <- renderText(tr("text_downmenu", language()))

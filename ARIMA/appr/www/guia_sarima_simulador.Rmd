@@ -1,0 +1,199 @@
+---
+title: "Simulador de modelos SARIMA"
+author: "STATIO"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+---
+
+
+
+# Introducción
+
+El simulador permite construir y visualizar series temporales generadas a partir de modelos SARIMA de la forma:
+
+\[
+SARIMA(p,d,q)(P,D,Q)_{12}
+\]
+
+Su finalidad no es únicamente simular una serie temporal, sino facilitar la comprensión de los principales componentes de un modelo ARIMA estacional:
+
+- la dependencia autorregresiva no estacional;
+- la dependencia de media móvil no estacional;
+- la presencia de estructura estacional;
+- el efecto de la diferenciación ordinaria y estacional;
+- la interpretación de la ACF y la PACF;
+- la relación entre los parámetros del modelo y los patrones observados en los correlogramas.
+
+Esta guía está diseñada para promover un aprendizaje activo mediante la experimentación sistemática con los órdenes del modelo y sus coeficientes.
+
+# Estructura funcional del simulador
+
+La interfaz se divide en dos áreas principales.
+
+## Panel de parámetros
+
+En el panel lateral se configuran los órdenes del modelo:
+
+\[
+(p,d,q)(P,D,Q)_{12}
+\]
+
+donde:
+
+- \(p\): orden autorregresivo no estacional;
+- \(d\): número de diferencias ordinarias;
+- \(q\): orden de media móvil no estacional;
+- \(P\): orden autorregresivo estacional;
+- \(D\): número de diferencias estacionales;
+- \(Q\): orden de media móvil estacional.
+
+El botón **Avanzado** permite modificar los coeficientes del modelo:
+
+\[
+\big(1 - \Phi_1 B^{12} - \ldots - \Phi_P B^{12P}\big)
+\big(1 - \phi_1 B - \ldots - \phi_p B^p\big)
+(1 - B)^d (1 - B^{12})^D Y_t =
+\big(1 + \Theta_1 B^{12} + \ldots + \Theta_Q B^{12Q}\big)
+\big(1 + \theta_1 B + \ldots + \theta_q B^q\big)\varepsilon_t
+\]
+
+- \(\phi_i\): coeficientes AR;
+- \(\theta_i\): coeficientes MA;
+- \(\Phi_i\): coeficientes AR estacionales;
+- \(\Theta_i\): coeficientes MA estacionales.
+
+También permite modificar la longitud de la serie simulada y el número máximo de retardos mostrados en la ACF/PACF.
+
+## Panel de resultados
+
+El panel principal muestra:
+
+- la serie temporal simulada;
+- la serie diferenciada;
+- la ACF de la serie diferenciada;
+- la PACF de la serie diferenciada;
+- una tabla con los datos simulados.
+
+**Nota:** la ACF y la PACF se calculan sobre la serie diferenciada, no sobre la serie original.
+
+# Interpretación de los gráficos
+
+## Serie simulada
+
+La primera figura muestra la serie generada por el modelo seleccionado. Permite observar visualmente:
+
+- tendencia;
+- persistencia temporal;
+- oscilaciones estacionales;
+- cambios producidos por los parámetros AR, MA, SAR y SMA.
+
+## Serie diferenciada
+
+La segunda figura muestra la serie tras aplicar las diferencias seleccionadas. Su objetivo es comprobar si la serie queda más estable tras eliminar tendencia o estacionalidad.
+
+## ACF
+
+La ACF mide la correlación entre la serie y sus retardos. En el simulador:
+
+- las barras grises no superan los intervalos de referencia;
+- las barras azules indican retardos cortos significativos;
+- las barras amarillas indican retardos estacionales significativos, como 12 o 24.
+
+**La ACF es especialmente útil para detectar componentes MA y patrones estacionales.**
+
+## PACF
+
+La PACF mide la correlación parcial entre la serie y sus retardos, eliminando el efecto de los retardos intermedios.
+
+**La PACF es especialmente útil para detectar componentes AR.**
+
+# Ejemplo guiado
+
+## Escenario 1: modelo AR(1)
+
+Selecciona:
+
+\[
+SARIMA(1,0,0)(0,0,0)_{12}
+\]
+
+con \(\phi_1 > 0\).
+
+Observa:
+
+- la serie presenta persistencia;
+- la ACF decrece gradualmente;
+- la PACF muestra una barra destacada en el retardo 1.
+
+**Pregunta guía:** ¿qué ocurre si aumentas \(\phi_1\) hacia valores cercanos a 1?
+
+## Escenario 2: modelo MA(1)
+
+Selecciona:
+
+\[
+SARIMA(0,0,1)(0,0,0)_{12}
+\]
+
+Observa:
+
+- la ACF muestra una barra destacada en el retardo 1;
+- la PACF decrece progresivamente.
+
+**Pregunta guía:** ¿por qué ahora el patrón principal aparece en la ACF y no en la PACF?
+
+## Escenario 3: modelo estacional
+
+Selecciona:
+
+\[
+SARIMA(0,0,0)(1,0,0)_{12}
+\]
+
+Observa:
+
+- aparecen barras relevantes en retardos estacionales;
+- los retardos 12, 24 o 36 pueden destacar en la ACF/PACF.
+
+**Pregunta guía:** ¿qué indica una barra significativa en el retardo 12?
+
+
+# Conceptos fundamentales ilustrables con el simulador
+
+**Proceso AR.** Un proceso autorregresivo usa valores pasados de la propia serie para explicar el valor actual. En la PACF suele aparecer una estructura especialmente informativa para identificar su orden.
+
+**Proceso MA.** Un proceso de media móvil usa errores pasados para explicar el valor actual. En la ACF suele aparecer una estructura especialmente informativa para identificar su orden.
+
+**Estacionalidad.** Existe estacionalidad cuando la serie muestra dependencia en retardos separados por un periodo fijo, por ejemplo 12 en datos mensuales.
+
+**Diferenciación ordinaria.** Se utiliza para eliminar tendencia o dependencia de largo plazo mediante diferencias entre observaciones consecutivas.
+
+**Diferenciación estacional.** Se utiliza para eliminar patrones que se repiten cada \(s\) periodos, por ejemplo cada 12 meses.
+
+**ACF.** Mide la correlación entre la serie y sus retardos. Es útil para estudiar dependencia temporal y detectar posibles términos MA o estacionales.
+
+**PACF.** Mide la correlación parcial con cada retardo, descontando la información explicada por retardos intermedios. Es útil para estudiar posibles términos AR.
+
+# Cómo estudiar con el simulador
+
+Un método eficaz es:
+
+1. Empieza con un modelo simple.
+2. Cambia un único parámetro cada vez.
+3. Observa cómo cambian la serie, la ACF y la PACF.
+4. Compara modelos AR, MA, SAR y SMA.
+5. Introduce diferenciación ordinaria o estacional y observa su efecto.
+6. Intenta deducir el modelo observando solo la ACF y la PACF.
+
+Así, el simulador funciona como un laboratorio para entender cómo los modelos SARIMA generan patrones temporales observables.
+
+
