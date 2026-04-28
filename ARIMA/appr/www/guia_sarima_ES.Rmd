@@ -1,10 +1,8 @@
 ---
-title: "Simulador de modelos SARIMA"
-author: "STATIO"
-date: "`r Sys.Date()`"
+title: ""
 output:
   pdf_document:
-    toc: true
+    toc: false
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
@@ -12,8 +10,43 @@ output:
     toc: true
     toc_depth: 2
     number_sections: true
+header-includes:
+  - \usepackage{graphicx}
+  - \usepackage{titling}
+  - \usepackage{geometry}
+  - \geometry{margin=2.5cm}
+  - \usepackage[spanish]{babel}
+  - \addto\captionsspanish{\renewcommand{\contentsname}{Índice}}
 ---
 
+
+\begin{titlepage}
+\centering
+
+\vspace*{1cm}
+
+\includegraphics[height=1.8cm]{UPV.png}
+\hspace{1cm}
+\includegraphics[height=1.8cm]{DEIOAC.png}
+
+\vspace{3cm}
+
+{\Huge \textbf{Simulador de modelos SARIMA}\par}
+
+\vspace{0.6cm}
+
+{\Large Simulación, diferenciación y análisis ACF/PACF\par}
+
+\vspace{2cm}
+
+
+
+{\large \today\par}
+
+\tableofcontents
+\newpage
+
+\end{titlepage}
 
 
 # Introducción

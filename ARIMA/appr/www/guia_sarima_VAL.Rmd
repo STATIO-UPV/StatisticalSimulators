@@ -1,0 +1,230 @@
+---
+title: ""
+output:
+  pdf_document:
+    toc: false
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+header-includes:
+  - \usepackage{graphicx}
+  - \usepackage{titling}
+  - \usepackage{geometry}
+  - \geometry{margin=2.5cm}
+  - \usepackage[catalan]{babel}
+  - \addto\captionsvalencian{\renewcommand{\contentsname}{Índex}}
+---
+
+
+\begin{titlepage}
+\centering
+
+\vspace*{1cm}
+
+\includegraphics[height=1.8cm]{UPV.png}
+\hspace{1cm}
+\includegraphics[height=1.8cm]{DEIOAC.png}
+
+\vspace{3cm}
+
+{\Huge \textbf{Simulador de models SARIMA}\par}
+
+\vspace{0.6cm}
+
+{\Large Simulació, diferenciació i anàlisi ACF/PACF\par}
+
+\vspace{2cm}
+
+
+
+{\large \today\par}
+
+\tableofcontents
+\newpage
+
+\end{titlepage}
+
+
+# Introducció
+
+El simulador permet construir i visualitzar sèries temporals generades a partir de models SARIMA de la forma:
+
+\[
+SARIMA(p,d,q)(P,D,Q)_{12}
+\]
+
+La seua finalitat no és únicament simular una sèrie temporal, sinó facilitar la comprensió dels principals components d’un model ARIMA estacional:
+
+- la dependència autoregressiva no estacional;
+- la dependència de mitjana mòbil no estacional;
+- la presència d’estructura estacional;
+- l’efecte de la diferenciació ordinària i estacional;
+- la interpretació de l’ACF i la PACF;
+- la relació entre els paràmetres del model i els patrons observats en els correlogrames.
+
+Aquesta guia està dissenyada per a promoure un aprenentatge actiu mitjançant l’experimentació sistemàtica amb els ordres del model i els seus coeficients.
+
+# Estructura funcional del simulador
+
+La interfície es divideix en dues àrees principals.
+
+## Panell de paràmetres
+
+En el panell lateral es configuren els ordres del model:
+
+\[
+(p,d,q)(P,D,Q)_{12}
+\]
+
+on:
+
+- \(p\): ordre autoregressiu no estacional;
+- \(d\): nombre de diferències ordinàries;
+- \(q\): ordre de mitjana mòbil no estacional;
+- \(P\): ordre autoregressiu estacional;
+- \(D\): nombre de diferències estacionals;
+- \(Q\): ordre de mitjana mòbil estacional.
+
+El botó **Avançat** permet modificar els coeficients del model:
+
+\[
+\big(1 - \Phi_1 B^{12} - \ldots - \Phi_P B^{12P}\big)
+\big(1 - \phi_1 B - \ldots - \phi_p B^p\big)
+(1 - B)^d (1 - B^{12})^D Y_t =
+\big(1 + \Theta_1 B^{12} + \ldots + \Theta_Q B^{12Q}\big)
+\big(1 + \theta_1 B + \ldots + \theta_q B^q\big)\varepsilon_t
+\]
+
+- \(\phi_i\): coeficients AR;
+- \(\theta_i\): coeficients MA;
+- \(\Phi_i\): coeficients AR estacionals;
+- \(\Theta_i\): coeficients MA estacionals.
+
+També permet modificar la longitud de la sèrie simulada i el nombre màxim de retards mostrats en l’ACF/PACF.
+
+## Panell de resultats
+
+El panell principal mostra:
+
+- la sèrie temporal simulada;
+- la sèrie diferenciada;
+- l’ACF de la sèrie diferenciada;
+- la PACF de la sèrie diferenciada;
+- una taula amb les dades simulades.
+
+**Nota:** l’ACF i la PACF es calculen sobre la sèrie diferenciada, no sobre la sèrie original.
+
+# Interpretació dels gràfics
+
+## Sèrie simulada
+
+La primera figura mostra la sèrie generada pel model seleccionat. Permet observar visualment:
+
+- tendència;
+- persistència temporal;
+- oscil·lacions estacionals;
+- canvis produïts pels paràmetres AR, MA, SAR i SMA.
+
+## Sèrie diferenciada
+
+La segona figura mostra la sèrie després d’aplicar les diferències seleccionades. El seu objectiu és comprovar si la sèrie queda més estable després d’eliminar tendència o estacionalitat.
+
+## ACF
+
+L’ACF mesura la correlació entre la sèrie i els seus retards. En el simulador:
+
+- les barres grises no superen els intervals de referència;
+- les barres blaves indiquen retards curts significatius;
+- les barres grogues indiquen retards estacionals significatius, com ara 12 o 24.
+
+**L’ACF és especialment útil per a detectar components MA i patrons estacionals.**
+
+## PACF
+
+La PACF mesura la correlació parcial entre la sèrie i els seus retards, eliminant l’efecte dels retards intermedis.
+
+**La PACF és especialment útil per a detectar components AR.**
+
+# Exemple guiat
+
+## Escenari 1: model AR(1)
+
+Selecciona:
+
+\[
+SARIMA(1,0,0)(0,0,0)_{12}
+\]
+
+amb \(\phi_1 > 0\).
+
+Observa:
+
+- la sèrie presenta persistència;
+- l’ACF decreix gradualment;
+- la PACF mostra una barra destacada en el retard 1.
+
+**Pregunta guia:** què ocorre si augmentes \(\phi_1\) cap a valors pròxims a 1?
+
+## Escenari 2: model MA(1)
+
+Selecciona:
+
+\[
+SARIMA(0,0,1)(0,0,0)_{12}
+\]
+
+Observa:
+
+- l’ACF mostra una barra destacada en el retard 1;
+- la PACF decreix progressivament.
+
+**Pregunta guia:** per què ara el patró principal apareix en l’ACF i no en la PACF?
+
+## Escenari 3: model estacional
+
+Selecciona:
+
+\[
+SARIMA(0,0,0)(1,0,0)_{12}
+\]
+
+Observa:
+
+- apareixen barres rellevants en retards estacionals;
+- els retards 12, 24 o 36 poden destacar en l’ACF/PACF.
+
+**Pregunta guia:** què indica una barra significativa en el retard 12?
+
+
+# Conceptes fonamentals il·lustrables amb el simulador
+
+**Procés AR.** Un procés autoregressiu utilitza valors passats de la mateixa sèrie per a explicar el valor actual. En la PACF sol aparéixer una estructura especialment informativa per a identificar-ne l’ordre.
+
+**Procés MA.** Un procés de mitjana mòbil utilitza errors passats per a explicar el valor actual. En l’ACF sol aparéixer una estructura especialment informativa per a identificar-ne l’ordre.
+
+**Estacionalitat.** Hi ha estacionalitat quan la sèrie mostra dependència en retards separats per un període fix, per exemple 12 en dades mensuals.
+
+**Diferenciació ordinària.** S’utilitza per a eliminar tendència o dependència de llarg termini mitjançant diferències entre observacions consecutives.
+
+**Diferenciació estacional.** S’utilitza per a eliminar patrons que es repeteixen cada \(s\) períodes, per exemple cada 12 mesos.
+
+**ACF.** Mesura la correlació entre la sèrie i els seus retards. És útil per a estudiar dependència temporal i detectar possibles termes MA o estacionals.
+
+**PACF.** Mesura la correlació parcial amb cada retard, descomptant la informació explicada pels retards intermedis. És útil per a estudiar possibles termes AR.
+
+# Com estudiar amb el simulador
+
+Un mètode eficaç és:
+
+1. Comença amb un model simple.
+2. Canvia un únic paràmetre cada vegada.
+3. Observa com canvien la sèrie, l’ACF i la PACF.
+4. Compara models AR, MA, SAR i SMA.
+5. Introdueix diferenciació ordinària o estacional i observa’n l’efecte.
+6. Intenta deduir el model observant només l’ACF i la PACF.
+
+Així, el simulador funciona com un laboratori per a entendre com els models SARIMA generen patrons temporals observables.
