@@ -66,17 +66,11 @@ texts <- list(
     EN = "1. Model parameters",
     VAL = "1. Paràmetres del model"
   ),
-  download_guide_text = c(
-    ES = "Descargar guía en PDF",
-    EN = "Download PDF guide",
-    VAL = "Descarregar guia en PDF"
+  userguide_btn = c(
+    ES = "Guía de uso",
+    EN = "User guide",
+    VAL = "Guia d'ús"
   ),
-  
-  guide_button = c(
-    ES = "Guía",
-    EN = "Guide",
-    VAL = "Guia"
-  ), 
   download_data_text = c(
     ES = "Descargar datos",
     EN = "Download data",
@@ -216,10 +210,7 @@ ui <- fluidPage(
         }
 
         #toggleSidebar {
-          position: fixed;
-          top: 10px;
-          left: 10px;
-          z-index: 3000; /* siempre por encima */
+          position: static !important;
         }"
     ))
   ),
@@ -259,7 +250,12 @@ ui <- fluidPage(
   
   # Botón que abre/cierra el panel lateral. No MODIFICAR.
   if (showparams) {
-    actionButton("toggleSidebar", textOutput("button_parameters"))
+    div(
+      id = "topLeftButtons",
+      style = "position:fixed; top:10px; left:10px; z-index:3000; display:flex; gap:10px;",
+      actionButton("toggleSidebar", textOutput("button_parameters")),
+      uiOutput("userguide_ui")
+    )
   },
   
   # -------------------- SIDEBAR --------------------
@@ -307,14 +303,6 @@ ui <- fluidPage(
   div(
     id = "contentWrapper", class = "shifted",
     
-    div(
-      style = "position:fixed; top:10px; left:320px; z-index:3000;",
-      downloadButton(
-        "download_guide",
-        textOutput("guide_button"),
-        class = "btn btn-default no-icon"
-      )
-    ),
     # Título y explicación (diccionario)
     div(
       style = "padding-top:50px; margin-bottom:30px",
@@ -340,12 +328,6 @@ ui <- fluidPage(
         ),
         uiOutput("sampleStats")
       ),
-      
-      # tabPanel(
-      #   textOutput("panel2_title"),
-      #   br(),
-      #   downloadButton("download_guide", textOutput("download_guide_text"))
-      #   ),
       
       tabPanel(
         textOutput("panel_data_title"),
@@ -391,7 +373,26 @@ server <- function(input, output, session) {
   observeEvent(input$lang_es, { language("ES") })
   observeEvent(input$lang_en, { language("EN") })
   observeEvent(input$lang_va, { language("VAL") })
-  
+
+  output$userguide_ui <- renderUI({
+    lang <- language()
+
+    pdf_file <- switch(
+      lang,
+      ES  = "guia_sarima_ES.pdf",
+      EN  = "guia_sarima_EN.pdf",
+      VAL = "guia_sarima_VAL.pdf",
+      "guia_sarima_ES.pdf"
+    )
+
+    tags$a(
+      href = pdf_file,
+      target = "_blank",
+      class = "btn btn-outline-secondary btn-sm",
+      tr("userguide_btn", lang)
+    )
+  })
+
   # --- Textos
   output$title <- renderText(tr("title", language()))
   output$explanation <- renderUI(HTML(tr("explanation", language())))
@@ -803,26 +804,6 @@ server <- function(input, output, session) {
     x <- x_sim()
     data.frame(t = seq_along(x), x = as.numeric(x))
   })
-  
-  output$guide_button <- renderText(
-    tr("guide_button", language())
-  )
-  
-  output$download_guide <- downloadHandler(
-    filename = function() {
-      paste0("guia_sarima_", language(), "_", Sys.Date(), ".pdf")
-    },
-    content = function(file) {
-      guia <- switch(
-        language(),
-        ES  = file.path("www", "guia_sarima_ES.pdf"),
-        EN  = file.path("www", "guia_sarima_EN.pdf"),
-        VAL = file.path("www", "guia_sarima_VAL.pdf")
-      )
-      
-      file.copy(guia, file, overwrite = TRUE)
-    }
-  )
 }
 
 
