@@ -302,7 +302,6 @@ ui <- fluidPage(
       tabsetPanel(
         tabPanel(
           textOutput("panel1_title"),
-          actionButton("genPob", textOutput("PopButton")),
           plotOutput("histPob"),
           
           #tableOutput("pobData")
@@ -377,7 +376,6 @@ server <- function(input, output) {
   output$text_downmenu <- renderText({ tr("text_downmenu", language()) })
   
   output$creditos <- renderUI({ HTML(tr("credits", language())) })
-  output$PopButton <- renderText({tr("PopButton", language())})
   output$Elements <- renderText({tr("Elements", language())})
   
   # ---------------- PARÁMETROS DINÁMICOS. SE PUEDEN AÑADIR/ELIMINAR SI HACEN FALTA. ----------------
@@ -392,19 +390,23 @@ server <- function(input, output) {
   # -------------------- GENERACIÓN DE DATOS -------------------------
   # Dataset generado pseudoaleatoriamente. Modificar con dataset propio si se desea. 
   
-  pob <- eventReactive(input$genPob, {
+  # pob() se recalcula automáticamente en cuanto cambia input$pdist:
+  # no hace falta pulsar ningún botón para generar la población.
+  pob <- reactive({
+    req(input$pdist)
     switch(input$pdist,
            "Asimetría +" = rexp(10000, rate = 1/10),
            "Normal"      = rnorm(10000, mean = 10, sd = 2),
            "Uniforme" = runif(10000, min = 2, max = 18))
   })
   
-  ## Flag reactivo
+  ## Flag reactivo: controla si se muestran los gráficos de las medias
   mostrarMedias <- reactiveVal(FALSE)
   
   ## Efectos (estado)
-  observeEvent(input$genPob, {mostrarMedias(FALSE)}) # borrar gráf medias
+  observeEvent(input$pdist, {mostrarMedias(FALSE)}, ignoreInit = TRUE) # borrar gráf medias al cambiar la población
   observeEvent(input$genMedias, {mostrarMedias(TRUE)}) # mostrar gráf medias
+  observeEvent(input$nelms, {mostrarMedias(FALSE)}, ignoreInit = TRUE) # borrar gráf medias al cambiar el nº de elementos
   
   
   
