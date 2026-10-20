@@ -33,7 +33,11 @@ texts <- list(
     EN = "Hypothesis testing: p-value and critical region", 
     VAL = "Contrast d'hipòtesis: p-valor i regió crítica" 
   ), 
-
+  userguide_btn = c(
+    ES = "Guía de uso",
+    EN = "User guide",
+    VAL = "Guia d’ús"
+  ),
   explanation = c(
     ES = "Simulador interactivo para visualizar el p-valor, la región crítica y la decisión de un contraste de hipótesis según el nivel de significación.",
     
@@ -499,10 +503,7 @@ ui <- fluidPage(
         }
 
         #toggleSidebar {
-          position: fixed;
-          top: 10px;
-          left: 10px;
-          z-index: 3000;
+          position: static !important;
         }
         
         /* Hace que todo dentro del sidebar use todo el ancho disponible */
@@ -605,6 +606,16 @@ ui <- fluidPage(
     }
   ")),
   
+  if (showparams) {
+    div(
+      id = "topLeftButtons",
+      style = "position:fixed; top:10px; left:10px; z-index:3000; display:flex; gap:10px;",
+      
+      actionButton("toggleSidebar", textOutput("button_parameters")),
+      
+      uiOutput("userguide_ui")
+    )},
+  
   tags$head(
     tags$style(HTML("
     .tab-content h4 {
@@ -614,10 +625,6 @@ ui <- fluidPage(
   ), # FIN DEL CSS
   
   # Botón que abre/cierra el panel lateral. No MODIFICAR.
-  
-  if(showparams) {
-    actionButton("toggleSidebar", textOutput("button_parameters"))
-  },
   
   
   div(id="sidebarWrapper",
@@ -794,6 +801,26 @@ server <- function(input, output, session) {
   output$title_tab2 <- renderText({ tr("title_tab2", language()) })
   output$title_tab3 <- renderText({ tr("title_tab3", language()) })
   output$title_tab4 <- renderText({ tr("title_tab4", language()) })
+    
+  output$userguide_ui <- renderUI({
+    
+    lang <- language()
+    
+    pdf_file <- switch(
+      lang,
+      ES  = "Guide_EN.pdf",
+      EN  = "Guide_EN.pdf",
+      VAL = "Guide_EN.pdf",
+      "Guide_EN.pdf"
+    )
+    
+    tags$a(
+      href = pdf_file,
+      target = "_blank",
+      class = "btn btn-outline-secondary btn-sm",
+      tr("userguide_btn", lang)
+    )
+  })
   
   output$title <- renderText({ tr("title", language()) })
   output$explanation <- renderUI({HTML(tr("explanation", language())) })
